@@ -1,0 +1,16 @@
+# deps
+/node_modules
+# next
+/.next/
+/out/
+# ts
+next-env.d.ts.bak
+*.tsbuildinfo
+# os
+.DS_Store
+# env
+.env*.local
+# impeccable working dir
+/.impeccable/review/
+# pasta temporária de preview (gerada a partir do out/)
+/preview/
