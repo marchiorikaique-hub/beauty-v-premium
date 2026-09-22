@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
   },
-  metadataBase: new URL("https://marchiorikaique-hub.github.io/beauty-v-premium/"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://marchiorikaique-hub.github.io/beauty-v-premium/"),
 };
 
 export default function RootLayout({
