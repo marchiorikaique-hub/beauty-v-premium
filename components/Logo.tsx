@@ -1,3 +1,4 @@
+import { asset } from "@/lib/assets";
 import { site } from "@/lib/site";
 
 interface LogoProps {
@@ -21,7 +22,7 @@ export function Logo({
       className={`flex items-center gap-3 ${stacked ? "flex-col text-center gap-2.5" : ""} ${className}`}
     >
       <img
-        src="/brand/badge.webp"
+        src={asset("/brand/badge.webp")}
         width={badge}
         height={badge}
         alt={`Brasão da ${site.name}`}

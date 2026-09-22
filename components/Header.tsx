@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Logo } from "./Logo";
 import { WhatsApp, Menu, Close } from "./icons";
 import { waGeneral } from "@/lib/site";
@@ -16,6 +16,24 @@ const nav = [
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const dismiss = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && open) {
+        setOpen(false);
+        toggleRef.current?.focus();
+      }
+    };
+    const wide = window.matchMedia("(min-width: 1024px)");
+    const closeOnWide = () => { if (wide.matches) setOpen(false); };
+    window.addEventListener("keydown", dismiss);
+    wide.addEventListener("change", closeOnWide);
+    return () => {
+      window.removeEventListener("keydown", dismiss);
+      wide.removeEventListener("change", closeOnWide);
+    };
+  }, [open]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -24,19 +42,13 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-500 ${
+      className={`sticky top-0 z-50 border-b border-espresso/10 transition-[background-color,box-shadow] duration-300 ${
         scrolled
-          ? "bg-offwhite/85 shadow-[0_1px_0_rgba(75,60,53,0.08),0_18px_40px_-34px_rgba(75,60,53,0.7)] backdrop-blur-md"
-          : "bg-transparent"
+          ? "bg-offwhite shadow-[0_1px_0_rgba(75,60,53,0.08),0_18px_40px_-34px_rgba(75,60,53,0.7)]"
+          : "bg-offwhite"
       }`}
     >
       <div className="shell flex items-center justify-between py-3.5">
@@ -45,7 +57,7 @@ export function Header() {
         </a>
 
         <nav aria-label="Categorias" className="hidden lg:block">
-          <ul className="flex items-center gap-8">
+          <ul className="flex items-center gap-5">
             {nav.map((item) => (
               <li key={item.href}>
                 <a
@@ -71,6 +83,8 @@ export function Header() {
             Chamar no WhatsApp
           </a>
           <button
+            ref={toggleRef}
+            aria-controls="mobile-menu"
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Fechar menu" : "Abrir menu"}
@@ -84,7 +98,10 @@ export function Header() {
 
       {/* menu mobile */}
       <div
-        className={`overflow-hidden border-t border-espresso/10 bg-offwhite/95 backdrop-blur-md transition-[max-height,opacity] duration-500 ease-out lg:hidden ${
+        id="mobile-menu"
+        inert={!open}
+        hidden={!open}
+        className={`overflow-hidden border-t border-espresso/10 bg-offwhite/95 transition-[max-height,opacity] duration-500 ease-out lg:hidden ${
           open ? "max-h-[420px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >

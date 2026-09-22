@@ -28,7 +28,7 @@ const steps = [
 export function HowToBuy() {
   return (
     <section
-      className="bg-champagne-soft/60 py-16 sm:py-24"
+      className="bg-champagne py-16 sm:py-24"
       aria-labelledby="how-title"
     >
       <div className="shell">
@@ -47,10 +47,7 @@ export function HowToBuy() {
 
         <ol className="relative grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
           {/* linha conectora (desktop) */}
-          <div
-            aria-hidden
-            className="rule-gold absolute left-0 right-0 top-8 hidden lg:block"
-          />
+
           {steps.map(({ icon: Icon, title, text }, i) => (
             <Reveal as="li" key={title} delay={i * 90} className="relative">
               <div className="flex flex-col items-center text-center lg:items-start lg:text-left">

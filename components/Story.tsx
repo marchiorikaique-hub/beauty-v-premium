@@ -1,3 +1,4 @@
+import { asset } from "@/lib/assets";
 import { Reveal } from "./Reveal";
 import { Sparkle } from "./icons";
 
@@ -55,7 +56,8 @@ export function Story() {
               style={{ boxShadow: "0 50px 90px -50px rgba(0,0,0,0.7)" }}
             >
               <img
-                src="/lifestyle/cereja.webp"
+                src={asset("/lifestyle/cereja.webp")}
+                loading="lazy"
                 alt="Linha de sabonetes corporais Cereja e Avelã da Beauty V Premium"
                 width={585}
                 height={640}
@@ -64,7 +66,7 @@ export function Story() {
             </div>
             <div className="absolute -bottom-5 -left-4 flex items-center gap-3 rounded-2xl bg-champagne-soft px-4 py-3 shadow-xl sm:-left-6">
               <img
-                src="/brand/badge.webp"
+                src={asset("/brand/badge.webp")}
                 width={44}
                 height={44}
                 alt=""

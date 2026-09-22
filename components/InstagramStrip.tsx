@@ -1,3 +1,4 @@
+import { asset } from "@/lib/assets";
 import { Reveal } from "./Reveal";
 import { Instagram, ArrowUpRight } from "./icons";
 import { site } from "@/lib/site";
@@ -44,7 +45,10 @@ export function InstagramStrip() {
               aria-label={`Ver no Instagram: ${shot.alt}`}
             >
               <img
-                src={shot.src}
+                src={asset(shot.src)}
+                loading="lazy"
+                width={400}
+                height={400}
                 alt={shot.alt}
                 className="h-full w-full object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
               />

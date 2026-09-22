@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./boutique.css";
 
 /* ============================================================
    Beauty V Premium — design tokens
@@ -13,9 +14,9 @@
   --color-rosa: #d8a7b1;
   --color-rosa-soft: #eccfd4;
   --color-taupe: #b8a99a;
-  --color-taupe-deep: #8a7a6b;
+  --color-taupe-deep: #726155;
   --color-espresso: #4b3c35;
-  --color-ink: #2c2320;
+  --color-ink: #4b3c35;
   --color-vinho: #6b1d2a;
   --color-vinho-deep: #551520;
   --color-gold: #c69a7e;
@@ -136,7 +137,7 @@
     transition: transform 0.35s var(--ease-out-soft),
       background-color 0.35s var(--ease-out-soft),
       color 0.35s var(--ease-out-soft), box-shadow 0.35s var(--ease-out-soft);
-    will-change: transform;
+
   }
   .btn:active {
     transform: translateY(1px);
@@ -175,8 +176,8 @@
   }
 
   .reveal {
-    opacity: 0;
-    transform: translateY(22px);
+    opacity: 1;
+    transform: none;
   }
   .reveal.is-in {
     opacity: 1;
@@ -191,37 +192,5 @@
       transform: none;
       transition: none;
     }
-  }
-}
-
-/* ---------- keyframed motion ---------- */
-@keyframes bv-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-.marquee-track {
-  display: inline-flex;
-  align-items: center;
-  white-space: nowrap;
-  animation: bv-marquee 34s linear infinite;
-}
-
-@keyframes bv-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-.slow-spin {
-  animation: bv-spin 48s linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track,
-  .slow-spin {
-    animation: none;
   }
 }

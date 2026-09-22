@@ -26,13 +26,12 @@ do dia). Tokens em `@theme` (`app/globals.css`):
 | Base clara (cards) | `cream` | `#FCFAF8` |
 | Campo quente | `champagne` / `champagne-soft` | `#E7C8B8` / `#F1E2D8` |
 | Destaque delicado | `rosa` / `rosa-soft` | `#D8A7B1` / `#ECCFD4` |
-| Secundário / linhas | `taupe` / `taupe-deep` | `#B8A99A` / `#8A7A6B` |
-| Texto | `espresso` / `ink` | `#4B3C35` / `#2C2320` |
+| Secundário / linhas | `taupe` / `taupe-deep` | `#B8A99A` / `#726155` |
+| Texto | `espresso` / `ink` | `#4B3C35` / `#4B3C35` |
 | Marca / ação | `vinho` / `vinho-deep` | `#6B1D2A` / `#551520` |
 | Metal / fios | `gold` / `gold-soft` | `#C69A7E` / `#DCB79C` |
 
-Vinho carrega regiões inteiras (announcement bar, painel do hero, band "Sobre",
-rodapé, botões e FAB). Champanhe/rosa são campos suaves; taupe é apoio.
+Rosa antigo preenche o painel do hero. Champanhe ancora sua legenda e a seção de compra. Vinho marca ações, faixa superior, Sobre e rodapé. Espresso é o texto principal. As imagens do catálogo usam campos por categoria: rosa para maquiagem, taupe claro para skincare e champanhe para perfumaria.
 
 ## Tipografia
 
@@ -45,17 +44,13 @@ rodapé, botões e FAB). Champanhe/rosa são campos suaves; taupe é apoio.
 
 ## Componentes (linguagem)
 
-- **Cantos**: generosos e macios (`rounded-2xl`/`3xl`; painéis `2rem`).
-- **Sombras**: sempre com offset + blur (tokens `--shadow-card/lift/panel`),
-  nunca halo. Cards sobem no hover (`-translate-y-1.5` + sombra maior).
-- **Botões** (`.btn`): pill. Primário vinho sobre champanhe; ghost com borda
-  fina que vira vinho no hover. (Definidos em `@layer components` pra utilitários
-  do Tailwind, ex. `hidden`, sobrescreverem quando preciso.)
-- **Produtos**: PNG/webp recortados (fundo removido via rembg) com sombra de
-  contato sutil, sobre card champanhe radial.
-- **Ícones**: SVG desenhados em traço 1.6 consistente (`components/icons.tsx`),
-  incluindo o WhatsApp e o Instagram. Nada de emoji como ícone.
-- **Assinatura da marca**: estrela de 4 pontas (do logo), recorrente.
+- Painel principal e imagens de produto com raio de 12px, sem cartões encaixotando todo o conteúdo.
+- Botão principal vinho, contatos secundários discretos; compra por produto com contorno vinho e área mínima de 44px.
+- Catálogo em duas colunas no celular e três a partir de 768px, com informações e ações alinhadas.
+- Busca local por produto ou marca, sem distinguir acentos, com contador anunciado e recuperação do estado vazio.
+- Filtros são botões com aria-pressed, acessíveis por Tab, Enter e Espaço.
+- Menu fechado usa hidden e inert; Escape fecha e devolve o foco ao botão; mudança para desktop fecha o menu.
+- Fotos reais existentes preservadas. Acessórios usa a marca no lugar da foto incorreta de uma colônia.
 
 ## Composição / ritmo
 
@@ -65,10 +60,7 @@ editorial dramático) → claro (como comprar, Instagram) → **rodapé vinho es
 
 ## Movimento
 
-- Um momento autoral: entrada suave em revelação no scroll (`components/Reveal.tsx`,
-  `IntersectionObserver`), ease-out exponencial, respeitando `prefers-reduced-motion`.
-- Marquee lento na announcement bar; anel pontilhado girando devagar no hero.
-- Hovers refinados (lift de card, zoom de imagem, sublinhado que cresce).
+Conteúdo visível desde o HTML inicial, sem depender de animação ou JavaScript para aparecer. Faixa superior estática. Transições discretas em controles e imagens; reduced-motion desativa movimento e rolagem suave.
 
 ## Superfícies do navegador (temadas)
 
@@ -78,8 +70,8 @@ Seleção (vinho/champanhe), scrollbar (taupe→vinho), foco `:focus-visible`
 ## Estrutura da página
 
 `AnnouncementBar` · `Header` (sticky, muda no scroll, menu mobile) · `Hero`
-(coluna Bodoni + painel vinho com produtos) · `CategoryTiles` (tiles editoriais)
-· `Catalog` (filtro client-side por categoria via hash + empty state de
+(coluna Bodoni + painel rosa com produtos) · `CategoryTiles` (tiles editoriais)
+· `Catalog` (busca local, filtro por categoria via hash + empty state de
 Acessórios) · `Story` (band vinho) · `HowToBuy` (stepper numerado) ·
 `InstagramStrip` · `Footer` · `WhatsAppFab`.
 

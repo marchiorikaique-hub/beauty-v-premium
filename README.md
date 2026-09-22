@@ -13,13 +13,15 @@ estática, sem precisar de Node rodando no servidor.
 ```bash
 pnpm install
 pnpm dev
-# abre em http://localhost:3210
+# abre em http://localhost:3000
 ```
 
 ## Gerar a versão pra publicar
 
 ```bash
 pnpm build
+# GitHub Pages, sob o caminho do repositório:
+NEXT_PUBLIC_BASE_PATH=/beauty-v-premium pnpm build
 ```
 
 Isso gera a pasta **`out/`** com o site pronto (HTML, CSS, JS e imagens).

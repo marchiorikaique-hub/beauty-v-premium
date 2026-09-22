@@ -14,11 +14,14 @@ const filters: { id: Filter; label: string }[] = [
 ];
 
 export function Catalog() {
+  const [query, setQuery] = useState("");
   const [active, setActive] = useState<Filter>("tudo");
 
   useEffect(() => {
     const applyFromHash = () => {
       const hash = window.location.hash.replace("#", "");
+      setQuery("");
+      if (hash === "catalogo") setActive("tudo");
       if (hash.startsWith("cat-")) {
         const id = hash.slice(4) as Filter;
         if (filters.some((f) => f.id === id)) setActive(id);
@@ -29,8 +32,11 @@ export function Catalog() {
     return () => window.removeEventListener("hashchange", applyFromHash);
   }, []);
 
-  const shown =
-    active === "tudo" ? products : products.filter((p) => p.category === active);
+  const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const shown = products.filter((p) =>
+    (active === "tudo" || p.category === active) &&
+    normalize(`${p.name} ${p.brand} ${p.blurb}`).includes(normalize(query.trim())),
+  );
 
   return (
     <section id="catalogo" className="scroll-mt-24 bg-offwhite py-16 sm:py-24">
@@ -56,18 +62,14 @@ export function Catalog() {
         </div>
 
         {/* filtros */}
-        <div
-          role="tablist"
-          aria-label="Filtrar por categoria"
-          className="mb-9 flex flex-wrap gap-2.5"
-        >
+        <div className="catalog-toolbar">
+        <div role="group" aria-label="Filtrar por categoria" className="catalog-filters">
           {filters.map((f) => {
             const isActive = active === f.id;
             return (
               <button
                 key={f.id}
-                role="tab"
-                aria-selected={isActive}
+                aria-pressed={isActive}
                 type="button"
                 onClick={() => {
                   setActive(f.id);
@@ -77,11 +79,7 @@ export function Catalog() {
                     f.id === "tudo" ? "#catalogo" : `#cat-${f.id}`,
                   );
                 }}
-                className={`rounded-full border px-5 py-2 text-sm font-medium transition-all duration-300 ${
-                  isActive
-                    ? "border-vinho bg-vinho text-champagne-soft shadow-[0_12px_24px_-14px_rgba(85,21,32,0.8)]"
-                    : "border-espresso/15 bg-cream text-espresso hover:border-vinho hover:text-vinho"
-                }`}
+                className="catalog-filter"
               >
                 {f.label}
               </button>
@@ -89,12 +87,30 @@ export function Catalog() {
           })}
         </div>
 
+        <label className="catalog-search">
+          Buscar no catálogo
+          <input type="search" value={query} onChange={(event) => setQuery(event.target.value)}
+            placeholder="Produto ou marca" aria-controls="catalog-results" />
+        </label>
+        </div>
+        <p className="catalog-count" role="status" aria-live="polite">
+          {shown.length} {shown.length === 1 ? "produto encontrado" : "produtos encontrados"}
+        </p>
+        <div id="catalog-results">
         {/* grade */}
         {shown.length > 0 ? (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="catalog-grid">
             {shown.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
+          </div>
+        ) : query.trim() ? (
+          <div className="rounded-xl bg-champagne-soft px-6 py-12 text-center">
+            <h3 className="text-2xl">Nenhum produto encontrado</h3>
+            <p className="mt-3">Tente outro nome ou veja todos os produtos.</p>
+            <button type="button" className="btn btn-primary mt-5" onClick={() => {
+              setQuery(""); setActive("tudo"); history.replaceState(null, "", "#catalogo");
+            }}>Limpar busca e filtros</button>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-4 rounded-3xl border border-dashed border-espresso/15 bg-champagne-soft/40 px-6 py-16 text-center">
@@ -117,6 +133,7 @@ export function Catalog() {
             </a>
           </div>
         )}
+        </div>
       </div>
     </section>
   );
