@@ -52,10 +52,18 @@ Sem travessão em qualquer texto visível.
 - Instagram: **@beauty_vpremium**.
 - Cidade: São Paulo, SP.
 
+## Painel da dona (entregue em 26/09/2026)
+
+`/admin` com login próprio da cliente (Vick). Ela cadastra, edita, esconde, esgota e
+exclui produtos, gerencia categorias, WhatsApp, Instagram e a barra de avisos, e troca a
+própria senha. A senha inicial foi definida pelo Kaique e enviada por mensagem, por isso o
+painel pede que ela troque por uma só dela. Esqueceu a senha: o Kaique redefine pelo CLI
+(ver README).
+
 ## Constraints
 
-- Preço **não** é público: nunca inventar valor. Cards levam pro WhatsApp
-  ("Valores e cores combinados no WhatsApp").
+- Preço é **opcional** e só a dona coloca (pelo painel). Sem preço, a loja mostra
+  "Valor sob consulta" e leva pro WhatsApp. Nunca inventar valor.
 - Referência estrutural de e-commerce: rubyrosemaquiagem.com.br (layout), mas o
   visual é a paleta premium da cliente, não o rosa/vermelho do Ruby Rose.
 
@@ -70,4 +78,4 @@ Sem travessão em qualquer texto visível.
   futuro, trocar por fotos em fundo neutro feitas pela cliente.
 - **Formas de pagamento / entrega / frete**: não detalhados no site pra não
   afirmar algo não confirmado. Combinado no WhatsApp.
-- **Domínio**: `beautyvpremium.com.br` usado só como placeholder no metadata.
+- **Domínio**: `beautyvpremium.com.br` (ativo, apontado pro VPS).

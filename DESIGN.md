@@ -94,3 +94,25 @@ nunca cinza puro).
 
 Next.js 15 (App Router) · React 19 · TypeScript strict · Tailwind CSS v4 ·
 `output: "export"` (site estático em `out/`, hospedável em qualquer lugar).
+
+## Painel (/admin): superfície de operação
+
+Mesma marca, outro modo (**Operate**): a dona está numa tarefa, quase sempre no celular.
+
+- **Tipografia**: só Jost (classe `.admin` troca os títulos pra Jost semibold). Bodoni só
+  na assinatura "Beauty V" da barra lateral e no login.
+- **Cor**: restrita. Vinho só pra ação primária, item ativo e interruptor ligado. Estados
+  semânticos fora da paleta de marca de propósito: `danger` #b42318, `success` #1f7a4d,
+  `warning` #8a5a00 (e versões `-soft`). Segunda camada neutra `panel` #f3ece6 na barra lateral.
+- **Componentes** (em `@layer components`): `.adm-card`, `.adm-input` (hover, foco vinho,
+  `aria-invalid` vermelho, disabled), `.adm-label/.adm-help/.adm-error`, `.btn-sm`,
+  `.btn-danger`, `.icon-btn`, `<dialog class="adm-dialog">` nativo. Interruptor
+  `role="switch"`. Toast com `aria-live`.
+- **Navegação**: barra lateral no computador; no celular, barra de cima + abas embaixo
+  (Produtos, Categorias, Loja, Conta). Lixeira fica dentro de Produtos.
+- **Formulários**: barra de salvar fixa embaixo com estado ("Alterações não salvas" /
+  "Tudo salvo"), aviso ao sair sem salvar, resumo de erros no topo + erro por campo,
+  contador de caracteres. Edição de categoria inline (sem modal); modal só pra confirmar
+  ação destrutiva.
+- **Movimento**: 150 a 250 ms, só pra estado (interruptor, hover, toast). Sem animação de entrada.
+- **Vazios** ensinam o próximo passo (catálogo vazio, lixeira vazia, filtro sem resultado).
