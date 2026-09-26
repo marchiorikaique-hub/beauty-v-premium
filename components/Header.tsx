@@ -5,17 +5,19 @@ import { Logo } from "./Logo";
 import { WhatsApp, Menu, Close } from "./icons";
 import { waGeneral } from "@/lib/site";
 
-const nav = [
-  { label: "Maquiagem", href: "#cat-maquiagem" },
-  { label: "Skincare", href: "#cat-skincare" },
-  { label: "Perfumaria", href: "#cat-perfumaria" },
-  { label: "Acessórios", href: "#cat-acessorios" },
-  { label: "Sobre", href: "#sobre" },
-];
+interface HeaderProps {
+  categories: { slug: string; name: string }[];
+  whatsapp: string;
+}
 
-export function Header() {
+export function Header({ categories, whatsapp }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const nav = [
+    ...categories.slice(0, 5).map((c) => ({ label: c.name, href: `/#cat-${c.slug}` })),
+    { label: "Sobre", href: "/#sobre" },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -40,7 +42,7 @@ export function Header() {
       }`}
     >
       <div className="shell flex items-center justify-between py-3.5">
-        <a href="#top" aria-label="Beauty V Premium, início" className="shrink-0">
+        <a href="/" aria-label="Beauty V Premium, início" className="shrink-0">
           <Logo badge={44} />
         </a>
 
@@ -62,7 +64,7 @@ export function Header() {
 
         <div className="flex items-center gap-2.5">
           <a
-            href={waGeneral}
+            href={waGeneral(whatsapp)}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-primary hidden px-5 py-2.5 text-sm sm:inline-flex"
@@ -82,10 +84,9 @@ export function Header() {
         </div>
       </div>
 
-      {/* menu mobile */}
       <div
         className={`overflow-hidden border-t border-espresso/10 bg-offwhite/95 backdrop-blur-md transition-[max-height,opacity] duration-500 ease-out lg:hidden ${
-          open ? "max-h-[420px] opacity-100" : "max-h-0 opacity-0"
+          open ? "max-h-[520px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <nav aria-label="Categorias" className="shell flex flex-col gap-1 py-4">
@@ -100,7 +101,7 @@ export function Header() {
             </a>
           ))}
           <a
-            href={waGeneral}
+            href={waGeneral(whatsapp)}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setOpen(false)}

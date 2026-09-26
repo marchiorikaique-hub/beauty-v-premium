@@ -25,7 +25,7 @@ const steps = [
   },
 ];
 
-export function HowToBuy() {
+export function HowToBuy({ whatsapp }: { whatsapp: string }) {
   return (
     <section
       className="bg-champagne-soft/60 py-16 sm:py-24"
@@ -71,7 +71,7 @@ export function HowToBuy() {
 
         <div className="mt-12 flex justify-center">
           <a
-            href={waGeneral}
+            href={waGeneral(whatsapp)}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-primary"

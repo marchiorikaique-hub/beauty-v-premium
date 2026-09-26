@@ -1,0 +1,11 @@
+node_modules
+.next
+out
+preview
+.data
+.git
+.claude
+.impeccable
+*.log
+.DS_Store
+.env*

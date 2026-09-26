@@ -1,4 +1,4 @@
-import { site } from "@/lib/site";
+import { SITE_NAME } from "@/lib/site";
 
 interface LogoProps {
   tone?: "dark" | "light";
@@ -24,7 +24,7 @@ export function Logo({
         src="/brand/badge.webp"
         width={badge}
         height={badge}
-        alt={`Brasão da ${site.name}`}
+        alt={`Brasão da ${SITE_NAME}`}
         className="rounded-full ring-1 ring-gold/40 shadow-[0_10px_24px_-16px_rgba(85,21,32,0.7)]"
         style={{ width: badge, height: badge }}
       />

@@ -8,7 +8,7 @@ const trust = [
   { icon: ChatHeart, label: "Atendimento no WhatsApp" },
 ];
 
-export function Hero() {
+export function Hero({ whatsapp }: { whatsapp: string }) {
   return (
     <section
       id="top"
@@ -54,12 +54,12 @@ export function Hero() {
 
           <Reveal delay={210}>
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <a href="#catalogo" className="btn btn-primary">
+              <a href="/#catalogo" className="btn btn-primary">
                 Ver catálogo
                 <ArrowRight size={18} />
               </a>
               <a
-                href={waGeneral}
+                href={waGeneral(whatsapp)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-ghost"

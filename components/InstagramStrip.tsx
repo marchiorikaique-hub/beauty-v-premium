@@ -1,6 +1,6 @@
 import { Reveal } from "./Reveal";
 import { Instagram, ArrowUpRight } from "./icons";
-import { site } from "@/lib/site";
+import { instagramUrl } from "@/lib/site";
 
 const shots = [
   { src: "/lifestyle/glow.webp", alt: "Body splash Glow em vários aromas" },
@@ -10,7 +10,8 @@ const shots = [
   { src: "/lifestyle/cereja.webp", alt: "Sabonete corporal Cereja e Avelã" },
 ];
 
-export function InstagramStrip() {
+export function InstagramStrip({ instagram }: { instagram: string }) {
+  const url = instagramUrl(instagram);
   return (
     <section className="shell py-16 sm:py-24" aria-labelledby="ig-title">
       <div className="mb-9 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
@@ -24,12 +25,12 @@ export function InstagramStrip() {
           </p>
         </div>
         <a
-          href={site.instagramUrl}
+          href={url}
           target="_blank"
           rel="noopener noreferrer"
           className="btn btn-ghost shrink-0"
         >
-          <Instagram size={18} />@{site.instagramHandle}
+          <Instagram size={18} />@{instagram}
         </a>
       </div>
 
@@ -37,7 +38,7 @@ export function InstagramStrip() {
         {shots.map((shot, i) => (
           <Reveal key={shot.src} delay={i * 60}>
             <a
-              href={site.instagramUrl}
+              href={url}
               target="_blank"
               rel="noopener noreferrer"
               className="group relative block aspect-square overflow-hidden rounded-2xl"

@@ -1,34 +1,36 @@
 import { Logo } from "./Logo";
 import { WhatsApp, Instagram } from "./icons";
-import { site, waGeneral } from "@/lib/site";
+import { SITE_NAME, instagramUrl, waGeneral } from "@/lib/site";
+import { formatPhoneBR } from "@/lib/format";
+import type { StoreSettings } from "@/lib/types";
 
-const categorias = [
-  { label: "Maquiagem", href: "#cat-maquiagem" },
-  { label: "Skincare", href: "#cat-skincare" },
-  { label: "Perfumaria", href: "#cat-perfumaria" },
-  { label: "Acessórios", href: "#cat-acessorios" },
-];
+interface FooterProps {
+  categories: { slug: string; name: string }[];
+  settings: StoreSettings;
+}
 
 const navegacao = [
-  { label: "Catálogo", href: "#catalogo" },
-  { label: "Sobre a marca", href: "#sobre" },
-  { label: "Início", href: "#top" },
+  { label: "Catálogo", href: "/#catalogo" },
+  { label: "Sobre a marca", href: "/#sobre" },
+  { label: "Início", href: "/" },
 ];
 
-export function Footer() {
-  const year = 2026;
+export function Footer({ categories, settings }: FooterProps) {
+  const year = new Date().getFullYear();
+  const wa = waGeneral(settings.whatsapp);
+  const ig = instagramUrl(settings.instagram);
   return (
     <footer className="bg-vinho-deep text-champagne/80">
       <div className="shell grid gap-12 py-16 sm:py-20 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div className="max-w-xs">
           <Logo tone="light" badge={48} />
           <p className="mt-5 text-sm leading-relaxed text-champagne/70">
-            Beleza e cosméticos com pronta-entrega. Make, skincare, perfumaria e
-            novidades toda semana, com atendimento pelo WhatsApp.
+            Beleza e cosméticos com pronta-entrega. Make, skincare, perfumaria e novidades toda semana, com
+            atendimento pelo WhatsApp.
           </p>
           <div className="mt-6 flex gap-3">
             <a
-              href={waGeneral}
+              href={wa}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Falar no WhatsApp"
@@ -37,7 +39,7 @@ export function Footer() {
               <WhatsApp size={19} />
             </a>
             <a
-              href={site.instagramUrl}
+              href={ig}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Abrir o Instagram"
@@ -48,18 +50,15 @@ export function Footer() {
           </div>
         </div>
 
-        <nav aria-label="Categorias">
-          <h3 className="mb-4 text-[0.72rem] font-medium uppercase tracking-[0.22em] text-gold-soft">
+        <nav aria-label="Categorias do rodapé">
+          <h3 className="mb-4 font-body text-[0.72rem] font-medium uppercase tracking-[0.22em] text-gold-soft">
             Categorias
           </h3>
           <ul className="flex flex-col gap-2.5 text-sm">
-            {categorias.map((l) => (
-              <li key={l.href}>
-                <a
-                  href={l.href}
-                  className="text-champagne/75 transition-colors hover:text-champagne-soft"
-                >
-                  {l.label}
+            {categories.map((c) => (
+              <li key={c.slug}>
+                <a href={`/#cat-${c.slug}`} className="text-champagne/75 transition-colors hover:text-champagne-soft">
+                  {c.name}
                 </a>
               </li>
             ))}
@@ -67,16 +66,13 @@ export function Footer() {
         </nav>
 
         <nav aria-label="Navegação">
-          <h3 className="mb-4 text-[0.72rem] font-medium uppercase tracking-[0.22em] text-gold-soft">
+          <h3 className="mb-4 font-body text-[0.72rem] font-medium uppercase tracking-[0.22em] text-gold-soft">
             Navegar
           </h3>
           <ul className="flex flex-col gap-2.5 text-sm">
             {navegacao.map((l) => (
               <li key={l.href}>
-                <a
-                  href={l.href}
-                  className="text-champagne/75 transition-colors hover:text-champagne-soft"
-                >
+                <a href={l.href} className="text-champagne/75 transition-colors hover:text-champagne-soft">
                   {l.label}
                 </a>
               </li>
@@ -85,31 +81,31 @@ export function Footer() {
         </nav>
 
         <div>
-          <h3 className="mb-4 text-[0.72rem] font-medium uppercase tracking-[0.22em] text-gold-soft">
+          <h3 className="mb-4 font-body text-[0.72rem] font-medium uppercase tracking-[0.22em] text-gold-soft">
             Contato
           </h3>
           <ul className="flex flex-col gap-2.5 text-sm">
             <li>
               <a
-                href={waGeneral}
+                href={wa}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-champagne/75 transition-colors hover:text-champagne-soft"
               >
-                WhatsApp {site.whatsappDisplay}
+                WhatsApp {formatPhoneBR(settings.whatsapp)}
               </a>
             </li>
             <li>
               <a
-                href={site.instagramUrl}
+                href={ig}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-champagne/75 transition-colors hover:text-champagne-soft"
               >
-                @{site.instagramHandle}
+                @{settings.instagram}
               </a>
             </li>
-            <li className="text-champagne/60">{site.city}</li>
+            {settings.city && <li className="text-champagne/60">{settings.city}</li>}
           </ul>
         </div>
       </div>
@@ -117,7 +113,7 @@ export function Footer() {
       <div className="border-t border-champagne/10">
         <div className="shell flex flex-col items-center justify-between gap-3 py-6 text-xs text-champagne/55 sm:flex-row">
           <p>
-            © {year} {site.name}. Todos os direitos reservados.
+            © {year} {SITE_NAME}. Todos os direitos reservados.
           </p>
           <p>Pedidos e pagamento combinados no WhatsApp.</p>
         </div>

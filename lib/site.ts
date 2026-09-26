@@ -1,36 +1,37 @@
-// Configuração central da Beauty V Premium.
-// Dados reais coletados do Instagram @beauty_vpremium.
+// Links de WhatsApp e URL pública. O número vem das configurações da loja
+// (editável no painel), não fica fixo no código.
 
-export const site = {
-  name: "Beauty V Premium",
-  shortName: "Beauty V",
-  tagline: "Make, skincare e perfumaria com pronta-entrega.",
-  city: "São Paulo, SP",
-  instagramHandle: "beauty_vpremium",
-  instagramUrl: "https://www.instagram.com/beauty_vpremium/",
-  // WhatsApp oficial (bio do Instagram): +55 11 99959-8625
-  whatsappNumber: "5511999598625",
-  whatsappDisplay: "(11) 99959-8625",
-} as const;
+export const SITE_NAME = "Beauty V Premium";
 
-/** Monta um link wa.me com mensagem pré-preenchida. */
-export function whatsappLink(message: string): string {
-  return `https://wa.me/${site.whatsappNumber}?text=${encodeURIComponent(message)}`;
+export function baseUrl(): string {
+  return (process.env.PUBLIC_BASE_URL || "https://beautyvpremium.com.br").replace(/\/+$/, "");
 }
 
-export const waGeneral = whatsappLink(
-  "Oi! Vim pelo site da Beauty V Premium e quero ver as novidades. ✨",
-);
+export function whatsappLink(number: string, message: string): string {
+  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+}
 
-export function waProduct(name: string, brand?: string): string {
-  const marca = brand ? ` (${brand})` : "";
+export function waGeneral(number: string): string {
+  return whatsappLink(number, "Oi! Vim pelo site da Beauty V Premium e quero ver as novidades. ✨");
+}
+
+export function waProduct(number: string, p: { name: string; brand?: string; url?: string; inStock?: boolean }): string {
+  const marca = p.brand ? ` (${p.brand})` : "";
+  const link = p.url ? `\n${p.url}` : "";
+  const msg =
+    p.inStock === false
+      ? `Oi! Vi no site da Beauty V Premium que o ${p.name}${marca} está esgotado. Me avisa quando chegar?${link}`
+      : `Oi! Vim pelo site da Beauty V Premium e me interessei pelo ${p.name}${marca}. Ainda tem pronta-entrega?${link}`;
+  return whatsappLink(number, msg);
+}
+
+export function waCategory(number: string, label: string): string {
   return whatsappLink(
-    `Oi! Vim pelo site da Beauty V Premium e me interessei pelo ${name}${marca}. Ainda tem pronta-entrega?`,
+    number,
+    `Oi! Vim pelo site da Beauty V Premium e quero ver as opções de ${label.toLowerCase()}. O que tem de novidade?`,
   );
 }
 
-export function waCategory(label: string): string {
-  return whatsappLink(
-    `Oi! Vim pelo site da Beauty V Premium e quero ver as opções de ${label}. O que tem de novidade?`,
-  );
+export function instagramUrl(handle: string): string {
+  return `https://www.instagram.com/${handle}/`;
 }

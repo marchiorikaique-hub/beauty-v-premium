@@ -14,3 +14,6 @@ next-env.d.ts.bak
 /.impeccable/review/
 # pasta temporária de preview (gerada a partir do out/)
 /preview/
+
+# dados locais (banco SQLite, uploads, backups)
+/.data/

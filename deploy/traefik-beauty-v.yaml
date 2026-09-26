@@ -1,0 +1,43 @@
+# Beauty V Premium: loja + painel (/admin). Serviço Swarm "beauty-v-app", criado
+# fora do EasyPanel (mesmo padrão do bernardo.yaml). Vai em:
+#   /etc/easypanel/traefik/config/beauty-v.yaml
+http:
+  routers:
+    beauty-v-preview:
+      rule: "Host(`beauty-v.ahzuil.easypanel.host`)"
+      entryPoints: ["https"]
+      priority: 3000
+      service: beauty-v-app
+      tls: { certResolver: letsencrypt }
+    beauty-v-domain:
+      rule: "Host(`beautyvpremium.com.br`)"
+      entryPoints: ["https"]
+      priority: 3000
+      service: beauty-v-app
+      tls: { certResolver: letsencrypt }
+    beauty-v-www:
+      rule: "Host(`www.beautyvpremium.com.br`)"
+      entryPoints: ["https"]
+      priority: 3000
+      middlewares: ["beauty-v-www-to-apex"]
+      service: beauty-v-app
+      tls: { certResolver: letsencrypt }
+    beauty-v-http:
+      rule: "Host(`beauty-v.ahzuil.easypanel.host`) || Host(`beautyvpremium.com.br`) || Host(`www.beautyvpremium.com.br`)"
+      entryPoints: ["http"]
+      priority: 3000
+      middlewares: ["beauty-v-https"]
+      service: beauty-v-app
+  services:
+    beauty-v-app:
+      loadBalancer:
+        servers:
+          - url: "http://beauty-v-app:3000"
+  middlewares:
+    beauty-v-https:
+      redirectScheme: { scheme: https, permanent: true }
+    beauty-v-www-to-apex:
+      redirectRegex:
+        regex: "^https?://www\\.beautyvpremium\\.com\\.br/(.*)"
+        replacement: "https://beautyvpremium.com.br/${1}"
+        permanent: true

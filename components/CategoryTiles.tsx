@@ -1,36 +1,48 @@
 import { Reveal } from "./Reveal";
-import { ArrowUpRight } from "./icons";
-import { categories } from "@/lib/products";
+import { ArrowUpRight, Sparkle } from "./icons";
+import type { Category } from "@/lib/types";
 
-export function CategoryTiles() {
+export function CategoryTiles({ categories }: { categories: Category[] }) {
+  if (categories.length === 0) return null;
+  const cols =
+    categories.length >= 4 ? "lg:grid-cols-4" : categories.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-2";
   return (
     <section className="shell py-16 sm:py-24" aria-labelledby="cat-title">
       <div className="mb-10 flex flex-col gap-4 sm:mb-12 sm:flex-row sm:items-end sm:justify-between">
-        <h2
-          id="cat-title"
-          className="max-w-lg font-display text-4xl text-ink sm:text-5xl"
-        >
+        <h2 id="cat-title" className="max-w-lg font-display text-4xl text-ink sm:text-5xl">
           Encontre pela sua vibe
         </h2>
         <p className="max-w-sm text-espresso/75">
-          Do gloss que todo mundo quer ao skincare da rotina, tudo separadinho
-          pra você achar rápido.
+          Do gloss que todo mundo quer ao skincare da rotina, tudo separadinho pra você achar rápido.
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className={`grid gap-4 sm:grid-cols-2 ${cols}`}>
         {categories.map((cat, i) => (
           <Reveal as="article" key={cat.id} delay={i * 70}>
             <a
-              href={`#cat-${cat.id}`}
+              href={`#cat-${cat.slug}`}
               className="group relative flex h-72 flex-col justify-end overflow-hidden rounded-3xl p-5 sm:h-80"
             >
-              <img
-                src={cat.image}
-                alt=""
-                aria-hidden
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.07]"
-              />
+              {cat.image ? (
+                <img
+                  src={cat.image}
+                  alt=""
+                  aria-hidden
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.07]"
+                />
+              ) : (
+                <div
+                  aria-hidden
+                  className="absolute inset-0 grid place-items-center"
+                  style={{
+                    background:
+                      "radial-gradient(90% 80% at 50% 30%, var(--color-rosa) 0%, var(--color-vinho) 78%)",
+                  }}
+                >
+                  <Sparkle size={56} className="-mt-16 text-champagne/40" />
+                </div>
+              )}
               <div
                 aria-hidden
                 className="absolute inset-0"
@@ -40,12 +52,10 @@ export function CategoryTiles() {
                 }}
               />
               <div className="relative">
-                <h3 className="font-display text-2xl text-champagne-soft">
-                  {cat.label}
-                </h3>
-                <p className="mt-1 max-w-[15rem] text-sm leading-snug text-champagne/85">
-                  {cat.blurb}
-                </p>
+                <h3 className="font-display text-2xl text-champagne-soft">{cat.name}</h3>
+                {cat.blurb && (
+                  <p className="mt-1 max-w-[15rem] text-sm leading-snug text-champagne/85">{cat.blurb}</p>
+                )}
                 <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-gold-soft">
                   Ver produtos
                   <ArrowUpRight

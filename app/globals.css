@@ -21,6 +21,15 @@
   --color-gold: #c69a7e;
   --color-gold-soft: #dcb79c;
 
+  /* estados do painel (semânticos, fora da paleta de marca de propósito) */
+  --color-danger: #b42318;
+  --color-danger-soft: #fdecea;
+  --color-success: #1f7a4d;
+  --color-success-soft: #e6f4ec;
+  --color-warning: #8a5a00;
+  --color-warning-soft: #fff4dc;
+  --color-panel: #f3ece6;
+
   --font-display: var(--font-bodoni), Georgia, "Times New Roman", serif;
   --font-body: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
 
@@ -172,6 +181,129 @@
       transparent
     );
     opacity: 0.55;
+  }
+
+  /* ---------- painel (/admin): superfície de operação, só Jost ---------- */
+  .admin {
+    font-family: var(--font-body);
+    color: var(--color-espresso);
+  }
+  .admin h1,
+  .admin h2,
+  .admin h3,
+  .admin h4 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    color: var(--color-ink);
+  }
+  .adm-card {
+    background: var(--color-cream);
+    border: 1px solid color-mix(in srgb, var(--color-espresso) 10%, transparent);
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px rgba(44, 35, 32, 0.04);
+  }
+  .adm-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    margin-bottom: 0.375rem;
+  }
+  .adm-help {
+    font-size: 0.8125rem;
+    color: var(--color-taupe-deep);
+    margin-top: 0.375rem;
+  }
+  .adm-error {
+    font-size: 0.8125rem;
+    color: var(--color-danger);
+    margin-top: 0.375rem;
+  }
+  .adm-input {
+    width: 100%;
+    min-height: 2.75rem;
+    border-radius: 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--color-espresso) 20%, transparent);
+    background: #fff;
+    padding: 0.625rem 0.875rem;
+    font-size: 1rem;
+    color: var(--color-ink);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .adm-input::placeholder {
+    color: color-mix(in srgb, var(--color-taupe-deep) 80%, transparent);
+  }
+  .adm-input:hover {
+    border-color: color-mix(in srgb, var(--color-espresso) 35%, transparent);
+  }
+  .adm-input:focus {
+    outline: none;
+    border-color: var(--color-vinho);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-vinho) 18%, transparent);
+  }
+  .adm-input[aria-invalid="true"] {
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 14%, transparent);
+  }
+  .adm-input:disabled {
+    background: var(--color-panel);
+    color: var(--color-taupe-deep);
+    cursor: not-allowed;
+  }
+  textarea.adm-input {
+    min-height: 6rem;
+    resize: vertical;
+    line-height: 1.5;
+  }
+  select.adm-input {
+    appearance: none;
+    padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234b3c35' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.1rem;
+  }
+  .btn-sm {
+    padding: 0.55rem 1rem;
+    font-size: 0.875rem;
+  }
+  .btn-danger {
+    background: var(--color-danger);
+    color: #fff;
+  }
+  .btn-danger:hover {
+    background: color-mix(in srgb, var(--color-danger) 85%, #000);
+  }
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    color: var(--color-espresso);
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .icon-btn:hover:not(:disabled) {
+    background: var(--color-panel);
+    color: var(--color-vinho);
+  }
+  .icon-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  dialog.adm-dialog::backdrop {
+    background: rgba(44, 35, 32, 0.45);
+    backdrop-filter: blur(2px);
   }
 
   .reveal {

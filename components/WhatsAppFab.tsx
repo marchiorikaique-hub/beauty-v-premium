@@ -1,10 +1,16 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { WhatsApp } from "./icons";
 import { waGeneral } from "@/lib/site";
 
-export function WhatsAppFab() {
+export function WhatsAppFab({ whatsapp }: { whatsapp: string }) {
+  const pathname = usePathname();
+  // na página do produto já existe o botão de comprar fixo no rodapé
+  if (pathname?.startsWith("/produto/")) return null;
   return (
     <a
-      href={waGeneral}
+      href={waGeneral(whatsapp)}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Falar com a Beauty V Premium no WhatsApp"
