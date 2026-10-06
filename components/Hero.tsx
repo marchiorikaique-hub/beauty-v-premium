@@ -1,197 +1,186 @@
-import { Reveal } from "./Reveal";
-import { Sparkle, ArrowRight, WhatsApp, Bag, Calendar, ChatHeart } from "./icons";
-import { waGeneral } from "@/lib/site";
-import type { HomeContent, Product } from "@/lib/types";
+"use client";
 
-const trust = [
-  { icon: Bag, label: "Pronta-entrega" },
-  { icon: Calendar, label: "Novidades toda semana" },
-  { icon: ChatHeart, label: "Atendimento no WhatsApp" },
-];
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowLeftLine, ArrowRight, ArrowRightLine, Sparkle } from "./icons";
+import type { HeroSlide } from "@/lib/types";
 
-export function Hero({ home, product, whatsapp }: { home: HomeContent; product: Product | null; whatsapp: string }) {
-  const img = home.heroImage;
-  const cardImg = product?.images[0];
+const INTERVAL = 6500;
+
+/** Topo da home: slides em cetim vinho que a dona troca pelo painel. */
+export function Hero({ slides }: { slides: HeroSlide[] }) {
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const reduced = useRef(false);
+  const count = slides.length;
+
+  const go = useCallback((i: number) => setIndex(((i % count) + count) % count), [count]);
+
+  useEffect(() => {
+    reduced.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }, []);
+
+  useEffect(() => {
+    if (count < 2 || paused || reduced.current) return;
+    const t = window.setTimeout(() => go(index + 1), INTERVAL);
+    return () => window.clearTimeout(t);
+  }, [index, paused, count, go]);
+
+  // arrastar com o dedo no celular
+  const touch = useRef<number | null>(null);
+
   return (
     <section
       id="top"
-      className="relative overflow-hidden pb-16 pt-10 sm:pb-24 sm:pt-14"
-      aria-labelledby="hero-title"
+      aria-roledescription="carrossel"
+      aria-label="Destaques"
+      className="satin relative overflow-hidden"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+      onTouchStart={(e) => (touch.current = e.touches[0]?.clientX ?? null)}
+      onTouchEnd={(e) => {
+        const start = touch.current;
+        const end = e.changedTouches[0]?.clientX;
+        touch.current = null;
+        if (start == null || end == null || Math.abs(end - start) < 45) return;
+        go(index + (end < start ? 1 : -1));
+      }}
     >
-      {/* campos de cor de fundo */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(120% 90% at 85% 0%, var(--color-champagne-soft) 0%, var(--color-offwhite) 46%, var(--color-offwhite) 100%)",
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -left-24 top-40 -z-10 h-72 w-72 rounded-full opacity-50 blur-3xl"
-        style={{ background: "var(--color-rosa-soft)" }}
-      />
+      {/* fios de seda e brilho */}
+      <div aria-hidden className="satin-sheen pointer-events-none absolute inset-0" />
 
-      <div className="shell grid items-center gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:gap-16">
-        {/* coluna de texto */}
-        <div className="max-w-xl">
-          <Reveal>
-            <h1
-              id="hero-title"
-              className="font-display text-[2.9rem] font-medium leading-[1.02] text-ink sm:text-6xl"
-            >
-              {home.heroTitle}
-              {home.heroHighlight && (
-                <>
-                  <br />
-                  <span className="italic text-vinho">{home.heroHighlight}</span>
-                </>
-              )}
-            </h1>
-          </Reveal>
-
-          <Reveal delay={140}>
-            <p className="mt-6 max-w-md text-[1.06rem] leading-relaxed text-espresso/85">{home.heroText}</p>
-          </Reveal>
-
-          <Reveal delay={210}>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <a href="/#catalogo" className="btn btn-primary">
-                Ver catálogo
-                <ArrowRight size={18} />
-              </a>
-              <a
-                href={waGeneral(whatsapp)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-ghost"
-              >
-                <WhatsApp size={18} />
-                Falar no WhatsApp
-              </a>
-            </div>
-          </Reveal>
-
-          <Reveal delay={280}>
-            <ul className="mt-10 flex flex-wrap gap-x-7 gap-y-3">
-              {trust.map(({ icon: Icon, label }) => (
-                <li
-                  key={label}
-                  className="flex items-center gap-2 text-sm text-espresso/80"
-                >
-                  <Icon size={19} className="text-vinho" />
-                  {label}
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-        </div>
-
-        {/* painel visual */}
-        <Reveal delay={160}>
-          <div className="relative mx-auto w-full max-w-md lg:max-w-none">
+      <div className="grid">
+        {slides.map((s, i) => {
+          const on = i === index;
+          const img = s.image;
+          return (
             <div
-              className="relative aspect-[4/5] overflow-hidden rounded-[2rem] sm:aspect-[5/6]"
-              style={{
-                background:
-                  "linear-gradient(160deg, var(--color-vinho) 0%, var(--color-vinho-deep) 100%)",
-                boxShadow: "var(--shadow-panel)",
-              }}
+              key={i}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${i + 1} de ${count}`}
+              aria-hidden={!on}
+              inert={!on}
+              className={`hero-slide [grid-area:1/1] ${on ? "is-on" : ""}`}
             >
-              {/* brilho radial + anel girando */}
-              <div
-                aria-hidden
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "radial-gradient(70% 55% at 50% 36%, rgba(231,200,184,0.34) 0%, transparent 62%)",
-                }}
-              />
-              <div
-                aria-hidden
-                className="slow-spin absolute left-1/2 top-[38%] h-[118%] w-[118%] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.16]"
-                style={{
-                  border: "1px dashed var(--color-gold-soft)",
-                  maskImage:
-                    "radial-gradient(circle, transparent 40%, black 41%)",
-                }}
-              />
-
-              <Sparkle
-                size={26}
-                className="absolute right-8 top-8 text-gold-soft/80"
-              />
-              <Sparkle
-                size={15}
-                className="absolute left-9 top-24 text-champagne/70"
-              />
-
-              {/* foto do quadro: PNG sem fundo flutua; foto normal preenche */}
-              {img && img.cutout && (
-                <img
-                  src={img.url}
-                  alt=""
-                  width={520}
-                  height={520}
-                  className="absolute left-1/2 top-[34%] max-h-[62%] w-[82%] -translate-x-1/2 -translate-y-1/2 object-contain drop-shadow-[0_30px_50px_rgba(40,15,20,0.5)]"
-                />
-              )}
-              {img && !img.cutout && (
-                <>
-                  <img src={img.url} alt="" className="absolute inset-0 h-full w-full object-cover" />
-                  <div
-                    aria-hidden
-                    className="absolute inset-0"
-                    style={{ background: "linear-gradient(to top, rgba(60,14,22,0.55) 0%, rgba(60,14,22,0) 45%)" }}
-                  />
-                </>
-              )}
-              {!img && (
-                <img
-                  src="/brand/badge.webp"
-                  alt=""
-                  width={220}
-                  height={220}
-                  className="absolute left-1/2 top-[38%] w-[42%] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-90 shadow-[0_30px_60px_-20px_rgba(40,15,20,0.8)]"
-                />
-              )}
-
-              {/* etiqueta pronta-entrega */}
-              <div className="absolute right-6 top-1/2 flex items-center gap-2 rounded-full bg-offwhite/95 px-4 py-2 shadow-lg backdrop-blur">
-                <span className="h-2 w-2 rounded-full bg-vinho" />
-                <span className="text-xs font-medium text-espresso">
-                  Pronta-entrega
-                </span>
-              </div>
-
-              {/* card de produto flutuante */}
-              {product && (
-                <a
-                  href={`/produto/${product.slug}`}
-                  className="absolute bottom-5 left-5 flex max-w-[calc(100%-2.5rem)] items-center gap-3 rounded-2xl bg-cream/95 p-3 pr-5 shadow-[0_20px_40px_-20px_rgba(40,15,20,0.7)] backdrop-blur transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1"
-                >
-                  <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-champagne-soft">
-                    {cardImg && (
-                      <img
-                        src={cardImg.url}
-                        alt=""
-                        width={64}
-                        height={64}
-                        className={cardImg.cutout ? "h-14 w-14 object-contain" : "h-full w-full object-cover"}
+              <div className="shell grid min-h-[34rem] items-center gap-6 pb-20 pt-8 sm:min-h-[36rem] lg:grid-cols-[1fr_1.05fr] lg:gap-12 lg:py-16">
+                {/* foto */}
+                <div className="hero-media relative order-1 mx-auto aspect-square w-full max-w-[19rem] sm:max-w-sm lg:order-none lg:max-w-none">
+                  {img && img.cutout && (
+                    <>
+                      <div
+                        aria-hidden
+                        className="absolute inset-[8%] rounded-full"
+                        style={{
+                          background:
+                            "radial-gradient(closest-side, rgba(255,200,215,0.32), rgba(255,200,215,0.08) 60%, transparent)",
+                        }}
                       />
-                    )}
-                  </div>
-                  <div className="min-w-0 leading-tight">
-                    <p className="truncate font-display text-base text-ink">{product.name}</p>
-                    <p className="truncate text-xs text-taupe-deep">{product.detail || product.brand || "Ver produto"}</p>
-                  </div>
-                </a>
-              )}
+                      <div aria-hidden className="absolute inset-[4%] rounded-full border border-gold-soft/25" />
+                      <img
+                        src={img.url}
+                        alt=""
+                        loading={i === 0 ? "eager" : "lazy"}
+                        className="absolute inset-[6%] h-[88%] w-[88%] object-contain drop-shadow-[0_34px_50px_rgba(20,2,8,0.6)]"
+                      />
+                    </>
+                  )}
+                  {img && !img.cutout && (
+                    <div className="absolute inset-0 overflow-hidden rounded-[2rem] ring-1 ring-gold-soft/30">
+                      <img src={img.url} alt="" loading={i === 0 ? "eager" : "lazy"} className="h-full w-full object-cover" />
+                    </div>
+                  )}
+                  {!img && (
+                    <img
+                      src="/brand/badge.webp"
+                      alt=""
+                      className="absolute inset-[14%] h-[72%] w-[72%] rounded-full shadow-[0_40px_70px_-30px_rgba(10,0,4,0.9)]"
+                    />
+                  )}
+                  <Sparkle size={22} className="absolute right-[6%] top-[8%] text-gold-soft/80" />
+                  <Sparkle size={13} className="absolute bottom-[14%] left-[4%] text-rosa/70" />
+                </div>
+
+                {/* texto */}
+                <div className="hero-copy relative text-center lg:text-left">
+                  {i === 0 ? (
+                    <h1 className="text-champagne-soft">
+                      <SlideTitle s={s} />
+                    </h1>
+                  ) : (
+                    <h2 className="text-champagne-soft">
+                      <SlideTitle s={s} />
+                    </h2>
+                  )}
+                  {s.text && (
+                    <p className="mx-auto mt-5 max-w-md text-[0.98rem] leading-relaxed text-champagne/85 lg:mx-0">{s.text}</p>
+                  )}
+                  <a href={s.link} className="btn btn-rose btn-caps mt-8 px-8 py-4">
+                    {s.cta}
+                    <ArrowRight size={17} />
+                  </a>
+                </div>
+              </div>
             </div>
-          </div>
-        </Reveal>
+          );
+        })}
       </div>
+
+      {count > 1 && (
+        <>
+          <button
+            type="button"
+            onClick={() => go(index - 1)}
+            aria-label="Slide anterior"
+            className="absolute left-3 top-1/2 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-gold-soft/40 text-gold-soft transition-colors hover:bg-white/10 md:grid xl:left-6"
+          >
+            <ArrowLeftLine size={20} />
+          </button>
+          <button
+            type="button"
+            onClick={() => go(index + 1)}
+            aria-label="Próximo slide"
+            className="absolute right-3 top-1/2 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-gold-soft/40 text-gold-soft transition-colors hover:bg-white/10 md:grid xl:right-6"
+          >
+            <ArrowRightLine size={20} />
+          </button>
+          <div className="absolute inset-x-0 bottom-6 flex justify-center gap-2.5">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => go(i)}
+                aria-label={`Ir pro slide ${i + 1}`}
+                aria-current={i === index}
+                className="grid h-6 place-items-center px-0.5"
+              >
+                <span
+                  className={`block h-1.5 rounded-full transition-all duration-500 ${
+                    i === index ? "w-7 bg-gold-soft" : "w-1.5 bg-champagne/45 hover:bg-champagne/80"
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+        </>
+      )}
     </section>
+  );
+}
+
+function SlideTitle({ s }: { s: HeroSlide }) {
+  return (
+    <>
+      {s.kicker && (
+        <span className="block font-display text-[0.95rem] font-medium uppercase tracking-[0.5em] text-champagne/90 sm:text-lg">
+          {s.kicker}
+        </span>
+      )}
+      <span className="title-caps mt-3 block text-[2.7rem] text-champagne-soft sm:text-6xl lg:text-[4.6rem]">{s.title}</span>
+      {s.script && (
+        <span className="script -mt-1 block text-[3.4rem] text-gold-soft sm:text-7xl lg:-mt-2 lg:text-[5.4rem]">{s.script}</span>
+      )}
+    </>
   );
 }

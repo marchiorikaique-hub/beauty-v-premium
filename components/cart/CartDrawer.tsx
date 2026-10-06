@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useCart } from "./CartProvider";
 import { cartWhatsappLink } from "@/lib/cart";
 import { formatBRL } from "@/lib/format";
-import { Bag, Check, Close, Minus, Plus, Sparkle, WhatsApp } from "../icons";
+import { BagHeart, Check, Close, Minus, Plus, Sparkle, WhatsApp } from "../icons";
 
 export function CartDrawer() {
   const cart = useCart();
@@ -57,7 +57,7 @@ export function CartDrawer() {
         {rows.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 px-8 text-center">
             <span className="grid h-16 w-16 place-items-center rounded-full bg-champagne-soft text-vinho">
-              <Bag size={28} />
+              <BagHeart size={28} />
             </span>
             <p className="font-display text-2xl text-ink">Seu carrinho está vazio</p>
             <p className="max-w-xs text-sm text-espresso/75">

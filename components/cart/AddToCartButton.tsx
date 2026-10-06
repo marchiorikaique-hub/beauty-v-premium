@@ -1,7 +1,7 @@
 "use client";
 
 import { useCart } from "./CartProvider";
-import { Bag } from "../icons";
+import { BagHeart } from "../icons";
 
 interface AddToCartButtonProps {
   productId: number;
@@ -23,7 +23,7 @@ export function AddToCartButton({ productId, variant = "", className = "", label
       }}
       className={`btn btn-primary ${className}`}
     >
-      <Bag size={18} />
+      <BagHeart size={18} />
       {label}
     </button>
   );

@@ -274,3 +274,33 @@ export const ChevronDown = (p: IconProps & { size?: number }) => (
     <path d="m6 9 6 6 6-6" />
   </Stroke>
 );
+/** Sacola com coração dentro (pedido da dona pro carrinho). */
+export const BagHeart = (p: IconProps & { size?: number }) => (
+  <Stroke {...p}>
+    <path d="M6 8h12l-.8 11.2a1.6 1.6 0 0 1-1.6 1.5H8.4a1.6 1.6 0 0 1-1.6-1.5L6 8Z" />
+    <path d="M9 8V6.5a3 3 0 0 1 6 0V8" />
+    <path d="M12 17.4s-2.6-1.5-2.6-3.3a1.3 1.3 0 0 1 2.6-.4 1.3 1.3 0 0 1 2.6.4c0 1.8-2.6 3.3-2.6 3.3Z" />
+  </Stroke>
+);
+export const Crown = (p: IconProps & { size?: number }) => (
+  <Stroke {...p}>
+    <path d="M4.5 17.5 3.5 8l5 4 3.5-6 3.5 6 5-4-1 9.5h-15Z" />
+    <path d="M5 20.5h14" />
+  </Stroke>
+);
+export const Diamond = (p: IconProps & { size?: number }) => (
+  <Stroke {...p}>
+    <path d="M7 4h10l4 5-9 11L3 9l4-5Z" />
+    <path d="M3 9h18M9.5 9 12 20l2.5-11M7 4l2.5 5L12 4l2.5 5L17 4" />
+  </Stroke>
+);
+export const ArrowLeftLine = (p: IconProps & { size?: number }) => (
+  <Stroke {...p}>
+    <path d="M15 5l-7 7 7 7" />
+  </Stroke>
+);
+export const ArrowRightLine = (p: IconProps & { size?: number }) => (
+  <Stroke {...p}>
+    <path d="m9 5 7 7-7 7" />
+  </Stroke>
+);

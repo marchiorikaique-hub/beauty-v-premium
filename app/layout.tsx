@@ -1,21 +1,34 @@
 import type { Metadata, Viewport } from "next";
-import { Bodoni_Moda, Jost } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { baseUrl } from "@/lib/site";
 
-const bodoni = Bodoni_Moda({
-  subsets: ["latin"],
-  variable: "--font-bodoni",
+// Tipografia escolhida pela dona (05/10): Cormorant Garamond nos títulos, Montserrat no texto
+// e uma caligráfica só pro acento ("Extraordinário"). Arquivos locais em app/fonts (ver README lá).
+const cormorant = localFont({
+  src: [
+    { path: "./fonts/cormorant-garamond.woff2", weight: "400 700", style: "normal" },
+    { path: "./fonts/cormorant-garamond-italic.woff2", weight: "400 700", style: "italic" },
+  ],
+  variable: "--font-cormorant",
   display: "swap",
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
+  fallback: ["Georgia", "Times New Roman", "serif"],
 });
 
-const jost = Jost({
-  subsets: ["latin"],
-  variable: "--font-jost",
+const montserrat = localFont({
+  src: "./fonts/montserrat.woff2",
+  weight: "300 600",
+  variable: "--font-montserrat",
   display: "swap",
-  weight: ["300", "400", "500", "600"],
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
+});
+
+const script = localFont({
+  src: "./fonts/great-vibes.woff2",
+  weight: "400",
+  variable: "--font-greatvibes",
+  display: "swap",
+  fallback: ["cursive"],
 });
 
 export const metadata: Metadata = {
@@ -30,22 +43,20 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#6b1d2a",
+  themeColor: "#3d0716",
 };
 
 const DIRECTION_CONTRACT = `<!--
-Beauty V Premium — direction contract (impeccable)
-THESIS: An editorial beauty boutique, not a loud drugstore grid. Her muted wine/champagne palette carries whole fields; products sit like objects on a shelf; WhatsApp is the checkout. Refuses the bright-pink category default and the generic feature-card page.
-OWN-WORLD: Off-white ground, deep vinho panels + footer, champagne/rosa soft fields, espresso text, rose-gold hairlines. Bodoni Moda (Didone) display + Jost geometric sans. Four-point sparkle mark. Real cut-out product photography with contact shadows.
-STORY: Visitor sees a curated premium selection with pronta-entrega, browses by category, taps Comprar no WhatsApp to order.
-FIRST VIEWPORT: Left, Bodoni H1 "Beleza premium com pronta-entrega" + subline + primary Ver catálogo and WhatsApp CTA + trust row; right, a deep vinho panel with floating product cutouts, badge and sparkles.
-FORM: E-commerce boutique home (Ruby Rose structure); brief-pinned visual world (client palette + brand + reference), so the concept roll is skipped by the pinned direction and the user's request to deliver. No seed key. Admin (/admin) is an Operate surface inside the same world: Jost only, restrained vinho for actions and state.
-FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance.
+Beauty V Premium — direction contract (impeccable), redesign 05/10/2026 pinned by the owner
+THESIS: A feminine, elegant beauty boutique in deep wine satin and rose gold, the world of her new logo. Not a loud drugstore grid.
+OWN-WORLD: Deep wine satin fields (header, hero, club, footer) with subtle pink sheen, blush/off-white ground for products, rose-gold metal for type accents and buttons. Cormorant Garamond display (caps, spaced), Montserrat body, Great Vibes script only for one accent word. Four-point sparkle with hairlines as the section ornament.
+STORY: Visitor lands on a satin slideshow ("Sua beleza elevada ao extraordinário"), browses round category tiles and the catalog, fills the cart (heart bag) and finishes the order on WhatsApp.
+FORM: E-commerce boutique home following the owner's own mockup. Admin is an Operate surface in the same world.
 -->`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" className={`${bodoni.variable} ${jost.variable}`}>
+    <html lang="pt-BR" className={`${cormorant.variable} ${montserrat.variable} ${script.variable}`}>
       <body className="min-h-screen overflow-x-hidden bg-offwhite">
         <div hidden dangerouslySetInnerHTML={{ __html: DIRECTION_CONTRACT }} />
         {children}

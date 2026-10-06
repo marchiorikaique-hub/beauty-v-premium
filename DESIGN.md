@@ -1,104 +1,51 @@
 # Beauty V Premium — Sistema de Design
 
-> Documentado a partir do build (impeccable). Descreve o mundo visual como ele
-> foi construído, não uma intenção. Fonte: `app/`, `components/`, `app/globals.css`.
+> Redesign de 05/10/2026 pedido pela dona, a partir da logo nova e de um mockup que ela
+> mandou ("mais elegante e feminino"). Substitui o mundo anterior (Bodoni + vinho apagado).
 
 ## Tese
 
-Uma **boutique de beleza editorial**, não uma prateleira de farmácia gritante. A
-paleta vinho/champanhe da marca preenche campos inteiros, os produtos aparecem
-recortados como objetos numa vitrine, e o WhatsApp é o checkout. Recusa o rosa
-berrante padrão da categoria e a página genérica de cards de feature.
+Boutique de beleza feminina e elegante em **cetim vinho profundo com rose gold**, o mundo
+da logo nova. Campos escuros de cetim (topo, slides, faixa Sobre, Beauty V Club, rodapé)
+alternam com fundo claro rosado onde ficam os produtos.
 
-## Modo
-
-**Persuade** (vitrine que precisa fazer o produto desejável e levar à ação no
-WhatsApp).
-
-## Cor
-
-Estratégia: **paleta cheia** sobre base clara (loja navegada no celular, à luz
-do dia). Tokens em `@theme` (`app/globals.css`):
+## Cor (tokens em `app/globals.css`)
 
 | Papel | Token | Hex |
 |---|---|---|
-| Base | `offwhite` | `#F8F5F2` |
-| Base clara (cards) | `cream` | `#FCFAF8` |
-| Campo quente | `champagne` / `champagne-soft` | `#E7C8B8` / `#F1E2D8` |
-| Destaque delicado | `rosa` / `rosa-soft` | `#D8A7B1` / `#ECCFD4` |
-| Secundário / linhas | `taupe` / `taupe-deep` | `#B8A99A` / `#8A7A6B` |
-| Texto | `espresso` / `ink` | `#4B3C35` / `#2C2320` |
-| Marca / ação | `vinho` / `vinho-deep` | `#6B1D2A` / `#551520` |
-| Metal / fios | `gold` / `gold-soft` | `#C69A7E` / `#DCB79C` |
+| Fundo | `offwhite` / `cream` | `#FBF5F2` / `#FFFAF8` |
+| Campo claro | `champagne-soft` / `rosa-soft` | `#F7E6DE` / `#F6DBE2` |
+| Vinho (ação, marca) | `vinho` / `vinho-deep` / `vinho-night` | `#7A1434` / `#4A0A1E` / `#2C0511` |
+| Toque de pink | `pink` / `rosa` | `#C2436E` / `#E8A6B8` |
+| Rose gold | `gold` / `gold-soft` | `#C58A73` / `#EBBFA8` |
+| Texto | `ink` / `espresso` / `taupe-deep` | `#2B0A13` / `#4A262C` / `#8C6466` |
 
-Vinho carrega regiões inteiras (announcement bar, painel do hero, band "Sobre",
-rodapé, botões e FAB). Champanhe/rosa são campos suaves; taupe é apoio.
+Classes de superfície: `.satin` (cetim vinho com brilho rosado), `.satin-night` (faixa de
+avisos), `.satin-sheen` (brilho que passa devagar), `.btn-rose` (botão rose gold metálico),
+`.btn-outline-rose`, `.btn-caps`.
 
-## Tipografia
+## Tipografia (arquivos locais em `app/fonts`)
 
-- **Display**: `Bodoni Moda` (Didone, ar de revista de moda/beleza). Títulos,
-  nome da marca, nomes de produto. Itálico como acento (ex.: "em pronta-entrega").
-- **Texto/UI**: `Jost` (grotesca geométrica). Corpo, nav, botões, labels.
-- Carregadas via `next/font/google` (self-host automático, sem layout shift).
-- Títulos: `letter-spacing: -0.02em`, `text-wrap: balance`, `line-height 1.04`.
-- Labels de apoio: caixa alta, `tracking` largo (`0.2em`–`0.42em`).
+- **Cormorant Garamond** (escolha da dona): títulos, quase sempre em caixa alta espaçada
+  (`.title-caps`). Nomes de produto em caixa normal, peso 600.
+- **Montserrat** (escolha da dona): texto e interface; rótulos em caixa alta com tracking.
+- **Great Vibes**: só a palavra de acento em letra cursiva rose gold (`.script`), ex.
+  "Extraordinário", "sua essência".
+- Fontes locais porque `next/font/google` gerava classe diferente no servidor e no CSS.
 
-## Componentes (linguagem)
+## Marca
 
-- **Cantos**: generosos e macios (`rounded-2xl`/`3xl`; painéis `2rem`).
-- **Sombras**: sempre com offset + blur (tokens `--shadow-card/lift/panel`),
-  nunca halo. Cards sobem no hover (`-translate-y-1.5` + sombra maior).
-- **Botões** (`.btn`): pill. Primário vinho sobre champanhe; ghost com borda
-  fina que vira vinho no hover. (Definidos em `@layer components` pra utilitários
-  do Tailwind, ex. `hidden`, sobrescreverem quando preciso.)
-- **Produtos**: PNG/webp recortados (fundo removido via rembg) com sombra de
-  contato sutil, sobre card champanhe radial.
-- **Ícones**: SVG desenhados em traço 1.6 consistente (`components/icons.tsx`),
-  incluindo o WhatsApp e o Instagram. Nada de emoji como ícone.
-- **Assinatura da marca**: estrela de 4 pontas (do logo), recorrente.
+`public/brand/badge.*` (brasão redondo da logo nova, com transparência, também ícone do
+site) e `public/brand/monogram.*` (só o BV rose gold, usado no cabeçalho ao lado de
+"BEAUTY V / PREMIUM"). Assinatura: estrela de 4 pontas entre dois fios (`SectionTitle`).
 
-## Composição / ritmo
+## Estrutura da home
 
-Claro (hero, categorias, catálogo) → **band vinho escuro "Sobre"** (momento
-editorial dramático) → claro (como comprar, Instagram) → **rodapé vinho escuro**
-(âncora). Mais espaço acima de um título do que abaixo.
-
-## Movimento
-
-- Um momento autoral: entrada suave em revelação no scroll (`components/Reveal.tsx`,
-  `IntersectionObserver`), ease-out exponencial, respeitando `prefers-reduced-motion`.
-- Marquee lento na announcement bar; anel pontilhado girando devagar no hero.
-- Hovers refinados (lift de card, zoom de imagem, sublinhado que cresce).
-
-## Superfícies do navegador (temadas)
-
-Seleção (vinho/champanhe), scrollbar (taupe→vinho), foco `:focus-visible`
-(contorno vinho), `caret-color` vinho. Em `@layer base`.
-
-## Estrutura da página
-
-`AnnouncementBar` · `Header` (sticky, mega menu "Categorias" com subcategorias,
-carrinho, menu mobile com sanfona) · `Hero` (textos e foto vindos do painel)
-(coluna Bodoni + painel vinho com produtos) · `CategoryTiles` (tiles editoriais)
-· `Catalog` (filtro client-side por categoria via hash + empty state de
-Acessórios) · `Story` (band vinho) · `HowToBuy` (stepper numerado) ·
-`InstagramStrip` · `Footer` · `WhatsAppFab` · `CartDrawer` (`<dialog>` que entra pela
-direita, total, finaliza no WhatsApp) · `AddedToast` (aviso escuro abaixo do header).
-
-Página do produto: bolinhas de cor 40px com anel ink na escolhida e risco diagonal na
-esgotada; opção sem cor vira etiqueta. A cor escolhida troca a foto da galeria.
-
-## Acessibilidade
-
-`lang="pt-BR"`, landmarks semânticos, `aria-label` em botões de ícone, skip-link
-pro catálogo, foco visível, alt real nas imagens de produto. Contrastes de texto
-acima do piso (texto sobre vinho usa champanhe; secundário é tingido da paleta,
-nunca cinza puro).
-
-## Stack
-
-Next.js 15 (App Router) · React 19 · TypeScript strict · Tailwind CSS v4 ·
-`output: "export"` (site estático em `out/`, hospedável em qualquer lugar).
+Faixa de avisos → cabeçalho em cetim (monograma, menu em caixa alta, mega menu de
+categorias, carrinho com coração) → **slides** (até 5, editáveis, trocam a cada 6,5s,
+pausam no hover/foco, arrastam no celular) → faixa de confiança (só fatos da loja) →
+**categorias em círculo** com aro rose gold → catálogo → faixa **Realce sua essência** →
+como comprar → **Beauty V Club** (só com link) → Instagram → rodapé em cetim.
 
 ## Painel (/admin): superfície de operação
 

@@ -18,7 +18,7 @@ export function ProductCard({ product: p, whatsapp, siteUrl }: ProductCardProps)
   const swatches = p.variants.filter((v) => v.color);
   const ask = waProduct(whatsapp, { name: p.name, brand: p.brand, url: `${siteUrl}${href}`, inStock: p.inStock });
   return (
-    <article className="group flex flex-col overflow-hidden rounded-3xl border border-espresso/8 bg-cream shadow-[var(--shadow-card)] transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-[var(--shadow-lift)]">
+    <article className="group flex flex-col overflow-hidden rounded-3xl border border-gold/20 bg-cream shadow-[var(--shadow-card)] transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-[var(--shadow-lift)]">
       <a href={href} className="flex flex-1 flex-col focus-visible:outline-offset-[-3px]">
         <div className="relative aspect-square overflow-hidden">
           <div
@@ -65,7 +65,7 @@ export function ProductCard({ product: p, whatsapp, siteUrl }: ProductCardProps)
             {p.categoryName ?? "Beauty V"}
             {p.brand ? ` · ${p.brand}` : ""}
           </p>
-          <h3 className="mt-1.5 font-display text-[1.35rem] leading-tight text-ink transition-colors group-hover:text-vinho">
+          <h3 className="mt-1.5 font-display text-[1.45rem] font-semibold leading-tight text-ink transition-colors group-hover:text-vinho">
             {p.name}
           </h3>
           {p.blurb && <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-espresso/75">{p.blurb}</p>}
@@ -120,7 +120,7 @@ export function ProductCard({ product: p, whatsapp, siteUrl }: ProductCardProps)
             href={ask}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-ghost w-full py-3 text-sm"
+            className="btn btn-ghost btn-caps w-full py-3"
             aria-label={`Pedir aviso quando ${p.name} chegar`}
           >
             <WhatsApp size={17} />
@@ -129,12 +129,12 @@ export function ProductCard({ product: p, whatsapp, siteUrl }: ProductCardProps)
         ) : (
           <>
             {p.variants.length > 0 ? (
-              <a href={href} className="btn btn-primary min-w-0 flex-1 py-3 text-sm">
+              <a href={href} className="btn btn-primary btn-caps min-w-0 flex-1 py-3">
                 Escolher {(p.variantLabel || "opção").toLowerCase()}
                 <ArrowRight size={17} />
               </a>
             ) : (
-              <AddToCartButton productId={p.id} className="min-w-0 flex-1 py-3 text-sm" label="Adicionar" />
+              <AddToCartButton productId={p.id} className="btn-caps min-w-0 flex-1 py-3" label="Comprar" />
             )}
             <a
               href={ask}

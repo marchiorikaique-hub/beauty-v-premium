@@ -25,7 +25,6 @@ import {
   getProduct,
   moveCategory,
   moveProduct,
-  getPublicProduct,
   restoreProduct,
   saveHome,
   saveSettings,
@@ -235,15 +234,7 @@ export async function saveHomeAction(input: unknown): Promise<ActionResult> {
   await requireUser();
   const parsed = homeSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: INVALID, fields: fieldErrors(parsed.error) };
-  const home = parsed.data;
-  if (home.heroProductSlug && !getPublicProduct(home.heroProductSlug)) {
-    return {
-      ok: false,
-      error: INVALID,
-      fields: { heroProductSlug: "Esse produto não está aparecendo na loja. Escolha outro." },
-    };
-  }
-  saveHome(home);
+  saveHome(parsed.data);
   refresh();
   return { ok: true, message: "Página inicial salva." };
 }

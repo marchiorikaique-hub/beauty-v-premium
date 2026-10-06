@@ -62,19 +62,15 @@ export function Header({ categories, whatsapp }: HeaderProps) {
     hoverTimer.current = window.setTimeout(() => setMega(v), v ? 90 : 160);
   };
 
-  const solid = scrolled || mega;
-
   return (
     <header
-      className={`sticky top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-500 ${
-        solid
-          ? "bg-offwhite/95 shadow-[0_1px_0_rgba(75,60,53,0.08),0_18px_40px_-34px_rgba(75,60,53,0.7)] backdrop-blur-md"
-          : "bg-transparent"
+      className={`satin sticky top-0 z-50 border-b border-gold/30 transition-shadow duration-500 ${
+        scrolled || mega ? "shadow-[0_18px_40px_-24px_rgba(20,2,8,0.85)]" : ""
       }`}
     >
-      <div className="shell flex items-center justify-between gap-4 py-3.5">
+      <div className="shell flex items-center justify-between gap-4 py-3 sm:py-3.5">
         <a href="/" aria-label="Beauty V Premium, início" className="shrink-0">
-          <Logo badge={44} />
+          <Logo />
         </a>
 
         <nav aria-label="Principal" className="hidden lg:block">
@@ -86,8 +82,8 @@ export function Header({ categories, whatsapp }: HeaderProps) {
                   onClick={() => setMega((v) => !v)}
                   aria-expanded={mega}
                   aria-controls="menu-categorias"
-                  className={`group flex items-center gap-1.5 text-sm font-medium transition-colors duration-300 hover:text-vinho ${
-                    mega ? "text-vinho" : "text-espresso"
+                  className={`group flex items-center gap-1.5 text-[0.74rem] font-semibold uppercase tracking-[0.16em] transition-colors duration-300 hover:text-gold-soft ${
+                    mega ? "text-gold-soft" : "text-champagne/90"
                   }`}
                 >
                   Categorias
@@ -99,13 +95,13 @@ export function Header({ categories, whatsapp }: HeaderProps) {
                   hidden={!mega}
                   className="absolute inset-x-0 top-full border-t border-espresso/8 bg-offwhite shadow-[0_40px_60px_-40px_rgba(75,60,53,0.55)]"
                 >
-                  <div className="shell grid grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] gap-x-8 gap-y-8 py-9">
+                  <div className="shell grid grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] gap-x-8 gap-y-8 py-9 text-espresso">
                     {categories.map((c) => (
                       <div key={c.slug}>
                         <a
                           href={catHref(c.slug)}
                           onClick={() => setMega(false)}
-                          className="font-display text-xl text-ink transition-colors hover:text-vinho"
+                          className="title-caps text-lg text-ink transition-colors hover:text-vinho"
                         >
                           {c.name}
                         </a>
@@ -147,10 +143,10 @@ export function Header({ categories, whatsapp }: HeaderProps) {
               <li key={item.href}>
                 <a
                   href={item.href}
-                  className="group relative text-sm font-medium text-espresso transition-colors duration-300 hover:text-vinho"
+                  className="group relative text-[0.74rem] font-semibold uppercase tracking-[0.16em] text-champagne/90 transition-colors duration-300 hover:text-gold-soft"
                 >
                   {item.label}
-                  <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-vinho transition-all duration-300 group-hover:w-full" />
+                  <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-gold-soft transition-all duration-300 group-hover:w-full" />
                 </a>
               </li>
             ))}
@@ -162,7 +158,7 @@ export function Header({ categories, whatsapp }: HeaderProps) {
             href={waGeneral(whatsapp)}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-ghost hidden px-5 py-2.5 text-sm xl:inline-flex"
+            className="btn btn-outline-rose hidden px-5 py-2.5 text-sm xl:inline-flex"
           >
             <WhatsApp size={17} />
             WhatsApp
@@ -173,7 +169,7 @@ export function Header({ categories, whatsapp }: HeaderProps) {
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Fechar menu" : "Abrir menu"}
             aria-expanded={open}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-espresso/15 text-espresso transition-colors hover:border-vinho hover:text-vinho lg:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-gold-soft/40 text-champagne-soft transition-colors hover:border-gold-soft hover:text-gold-soft lg:hidden"
           >
             {open ? <Close /> : <Menu />}
           </button>

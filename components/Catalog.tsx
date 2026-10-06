@@ -2,11 +2,14 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { ProductCard } from "./ProductCard";
+import { SectionTitle } from "./SectionTitle";
 import { WhatsApp, Sparkle } from "./icons";
 import { waCategory, waGeneral } from "@/lib/site";
 import type { CategoryNode, Product } from "@/lib/types";
 
 interface CatalogProps {
+  title: string;
+  text: string;
   products: Product[];
   tree: CategoryNode[];
   whatsapp: string;
@@ -19,7 +22,7 @@ function normalize(s: string) {
   return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 }
 
-export function Catalog({ products, tree, whatsapp, siteUrl }: CatalogProps) {
+export function Catalog({ title, text, products, tree, whatsapp, siteUrl }: CatalogProps) {
   const [active, setActive] = useState<string>(TUDO);
   const [query, setQuery] = useState("");
 
@@ -54,18 +57,13 @@ export function Catalog({ products, tree, whatsapp, siteUrl }: CatalogProps) {
   const activeName = all.find((f) => f.slug === active)?.name ?? "";
 
   return (
-    <section id="catalogo" className="scroll-mt-24 bg-offwhite py-16 sm:py-24">
+    <section id="catalogo" className="scroll-mt-24 bg-offwhite pb-16 pt-16 sm:pb-24 sm:pt-20">
       {all.map((c) => (
         <span key={c.slug} id={`cat-${c.slug}`} aria-hidden className="block h-0 scroll-mt-28" />
       ))}
 
       <div className="shell">
-        <div className="mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
-          <h2 className="font-display text-4xl text-ink sm:text-5xl">Nosso catálogo</h2>
-          <p className="max-w-sm text-espresso/75">
-            Uma seleção com pronta-entrega. Coloca no carrinho o que quiser e finaliza o pedido pelo WhatsApp.
-          </p>
-        </div>
+        <SectionTitle title={title} text={text} />
 
         <div className="mb-9 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div role="tablist" aria-label="Filtrar por categoria" className="flex flex-wrap gap-2.5">
@@ -78,9 +76,9 @@ export function Catalog({ products, tree, whatsapp, siteUrl }: CatalogProps) {
                   aria-selected={isActive}
                   type="button"
                   onClick={() => pick(f.slug)}
-                  className={`rounded-full border px-5 py-2 text-sm font-medium transition-all duration-300 ${
+                  className={`rounded-full border px-5 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.12em] transition-all duration-300 ${
                     isActive
-                      ? "border-vinho bg-vinho text-champagne-soft shadow-[0_12px_24px_-14px_rgba(85,21,32,0.8)]"
+                      ? "border-vinho bg-vinho text-champagne-soft shadow-[0_12px_24px_-14px_rgba(74,10,30,0.8)]"
                       : "border-espresso/15 bg-cream text-espresso hover:border-vinho hover:text-vinho"
                   }`}
                 >

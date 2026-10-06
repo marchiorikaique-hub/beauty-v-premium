@@ -67,20 +67,37 @@ export interface Product {
   updatedAt: string;
 }
 
+/** Um slide do topo da home (as "fotos que ficam passando"). */
+export interface HeroSlide {
+  /** linha fina de cima, ex.: "Sua beleza" */
+  kicker: string;
+  /** linha grande, ex.: "Elevada ao" */
+  title: string;
+  /** palavra em letra cursiva rose gold, ex.: "Extraordinário" */
+  script: string;
+  text: string;
+  image: ProductImage | null;
+  cta: string;
+  /** pra onde o botão leva: "#catalogo", "/#cat-x" ou "/produto/x" */
+  link: string;
+}
+
 /** Textos e fotos da página inicial, editáveis no painel. */
 export interface HomeContent {
-  heroTitle: string;
-  heroHighlight: string;
-  heroText: string;
-  heroImage: ProductImage | null;
-  /** produto do cartãozinho no quadro vinho; vazio = sem cartão */
-  heroProductSlug: string;
+  heroSlides: HeroSlide[];
+  categoriesTitle: string;
+  catalogTitle: string;
+  catalogText: string;
   storyTitle: string;
   storyHighlight: string;
   storyText1: string;
   storyText2: string;
   storyImage: string;
   storyPoints: string[];
+  clubTitle: string;
+  clubText: string;
+  /** link do grupo VIP; vazio = bloco não aparece */
+  clubLink: string;
 }
 
 export interface StoreSettings {

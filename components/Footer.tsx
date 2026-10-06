@@ -20,10 +20,10 @@ export function Footer({ categories, settings }: FooterProps) {
   const wa = waGeneral(settings.whatsapp);
   const ig = instagramUrl(settings.instagram);
   return (
-    <footer className="bg-vinho-deep text-champagne/80">
+    <footer className="satin text-champagne/80">
       <div className="shell grid gap-12 py-16 sm:py-20 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div className="max-w-xs">
-          <Logo tone="light" badge={48} />
+          <Logo />
           <p className="mt-5 text-sm leading-relaxed text-champagne/70">
             Beleza e cosméticos com pronta-entrega. Make, skincare, perfumaria e novidades toda semana, com
             atendimento pelo WhatsApp.

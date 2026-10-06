@@ -6,13 +6,13 @@ export function AnnouncementBar({ items }: { items: string[] }) {
   const base = items.length < 4 ? [...items, ...items, ...items, ...items].slice(0, Math.max(4, items.length)) : items;
   const loop = [...base, ...base];
   return (
-    <div className="bg-vinho text-champagne-soft">
+    <div className="satin-night">
       <div className="relative overflow-hidden py-2.5">
         <div className="marquee-track" aria-label={items.join(" · ")}>
           {loop.map((item, i) => (
             <span key={i} className="flex items-center" aria-hidden={i >= base.length || undefined}>
-              <span className="px-4 text-[0.72rem] font-medium uppercase tracking-[0.22em]">{item}</span>
-              <Sparkle size={11} className="text-gold-soft" />
+              <span className="px-5 text-[0.68rem] font-medium uppercase tracking-[0.26em] text-gold-soft">{item}</span>
+              <Sparkle size={10} className="text-rosa/80" />
             </span>
           ))}
         </div>

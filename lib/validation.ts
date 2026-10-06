@@ -92,12 +92,29 @@ export const categorySchema = z.object({
 const line = (min: number, max: number, what: string) =>
   z.string().trim().min(min, `Escreva ${what}.`).max(max, `Use no máximo ${max} caracteres.`);
 
+const internalLink = z
+  .string()
+  .trim()
+  .regex(/^(#[a-z0-9-]+|\/(#cat-[a-z0-9-]+|produto\/[a-z0-9-]+)?)$/, "Escolha pra onde o botão leva.");
+
 export const homeSchema = z.object({
-  heroTitle: line(2, 40, "o título"),
-  heroHighlight: z.string().trim().max(40, "Use no máximo 40 caracteres."),
-  heroText: line(10, 260, "o texto de apresentação"),
-  heroImage: imageSchema.nullable(),
-  heroProductSlug: z.string().trim().max(80),
+  heroSlides: z
+    .array(
+      z.object({
+        kicker: z.string().trim().max(30, "Use no máximo 30 caracteres."),
+        title: line(2, 30, "a linha grande"),
+        script: z.string().trim().max(24, "Use no máximo 24 caracteres."),
+        text: z.string().trim().max(200, "Use no máximo 200 caracteres."),
+        image: imageSchema.nullable(),
+        cta: line(2, 24, "o texto do botão"),
+        link: internalLink,
+      }),
+    )
+    .min(1, "Deixe pelo menos um slide.")
+    .max(5, "No máximo 5 slides."),
+  categoriesTitle: line(2, 40, "o título"),
+  catalogTitle: line(2, 40, "o título"),
+  catalogText: z.string().trim().max(200, "Use no máximo 200 caracteres."),
   storyTitle: line(2, 60, "o título"),
   storyHighlight: z.string().trim().max(40, "Use no máximo 40 caracteres."),
   storyText1: line(10, 600, "o primeiro parágrafo"),
@@ -106,6 +123,12 @@ export const homeSchema = z.object({
   storyPoints: z
     .array(z.string().trim().min(1, "Escreva algo ou remova o item.").max(60, "Use no máximo 60 caracteres."))
     .max(5, "No máximo 5 itens."),
+  clubTitle: line(2, 40, "o título"),
+  clubText: z.string().trim().max(200, "Use no máximo 200 caracteres."),
+  clubLink: z.union([
+    z.literal(""),
+    z.string().trim().url("Cole o link completo, começando com https://").startsWith("https://", "O link precisa começar com https://"),
+  ]),
 });
 
 export const settingsSchema = z.object({

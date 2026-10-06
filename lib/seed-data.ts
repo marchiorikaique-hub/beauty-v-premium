@@ -15,20 +15,49 @@ export const seedSettings: StoreSettings = {
     "Várias formas de pagamento",
   ],
   home: {
-    heroTitle: "Beleza premium,",
-    heroHighlight: "em pronta-entrega.",
-    heroText:
-      "Maquiagem, skincare, perfumaria e os queridinhos que viralizam, selecionados com carinho e prontinhos pra enviar. Novidades toda semana.",
-    heroImage: { url: "/products/p03.webp", cutout: true, width: 1000, height: 1000 },
-    heroProductSlug: "tinted-balm-feels",
-    storyTitle: "Beleza é cuidado, e cuidado",
-    storyHighlight: "mora no detalhe.",
+    heroSlides: [
+      {
+        kicker: "Sua beleza",
+        title: "Elevada ao",
+        script: "Extraordinário",
+        text: "Maquiagem, skincare, perfumaria e os queridinhos que viralizam, com pronta-entrega e novidades toda semana.",
+        image: { url: "/products/p03.webp", cutout: true, width: 1000, height: 1000 },
+        cta: "Comprar agora",
+        link: "#catalogo",
+      },
+      {
+        kicker: "Perfumes que",
+        title: "Deixam marca",
+        script: "na pele",
+        text: "Body splashes e colônias pra usar todo dia e sair cheirosa por onde passar.",
+        image: { url: "/products/p05.webp", cutout: true, width: 1000, height: 1000 },
+        cta: "Ver perfumaria",
+        link: "/#cat-perfumaria",
+      },
+      {
+        kicker: "Lábios",
+        title: "Brilho que",
+        script: "encanta",
+        text: "Glosses, tintas e balms das marcas queridinhas, em várias cores.",
+        image: { url: "/products/p06.webp", cutout: true, width: 1000, height: 1000 },
+        cta: "Ver maquiagem",
+        link: "/#cat-maquiagem",
+      },
+    ],
+    categoriesTitle: "Compre por categoria",
+    catalogTitle: "Nossos queridinhos",
+    catalogText: "Uma seleção com pronta-entrega. Coloca no carrinho o que quiser e finaliza o pedido pelo WhatsApp.",
+    storyTitle: "Realce",
+    storyHighlight: "sua essência",
     storyText1:
       "A Beauty V Premium nasceu pra deixar a sua rotina de beleza mais fácil e mais gostosa. A gente garimpa maquiagem, skincare e perfumaria das marcas queridinhas e deixa tudo em pronta-entrega, pra chegar rápido na sua mão.",
     storyText2:
       "Nada de robô: o atendimento é de gente pra gente, direto no WhatsApp. Você escolhe, tira dúvida de cor e de aroma, e a gente combina o melhor jeito de pagar e receber.",
     storyImage: "/lifestyle/cereja.webp",
     storyPoints: ["Curadoria de marcas queridinhas", "Pronta-entrega de verdade", "Atendimento de gente pra gente"],
+    clubTitle: "Beauty V Club",
+    clubText: "Mais vantagens e exclusividades. Entre no grupo VIP e saiba dos lançamentos e promoções antes de todo mundo.",
+    clubLink: "",
   },
 };
 

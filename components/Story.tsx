@@ -6,21 +6,20 @@ export function Story({ home }: { home: HomeContent }) {
   return (
     <section
       id="sobre"
-      className="scroll-mt-24 bg-vinho text-champagne-soft"
+      className="satin scroll-mt-24"
       aria-labelledby="story-title"
     >
       <div className="shell grid items-center gap-12 py-20 lg:grid-cols-2 lg:gap-16 lg:py-28">
         <Reveal>
           <div className="max-w-xl">
             <Sparkle size={22} className="mb-6 text-gold-soft" />
-            <h2
-              id="story-title"
-              className="font-display text-4xl leading-[1.06] text-champagne-soft sm:text-[3.1rem]"
-            >
-              {home.storyTitle}
-              {home.storyHighlight && <span className="italic text-rosa"> {home.storyHighlight}</span>}
+            <h2 id="story-title" className="text-champagne-soft">
+              <span className="title-caps block text-[2.6rem] sm:text-[3.6rem]">{home.storyTitle}</span>
+              {home.storyHighlight && (
+                <span className="script -mt-1 block text-[3.2rem] text-gold-soft sm:text-[4.4rem]">{home.storyHighlight}</span>
+              )}
             </h2>
-            <p className="mt-6 whitespace-pre-line text-champagne/85">{home.storyText1}</p>
+            <p className="mt-6 max-w-prose whitespace-pre-line text-champagne/85">{home.storyText1}</p>
             {home.storyText2 && <p className="mt-4 whitespace-pre-line text-champagne/85">{home.storyText2}</p>}
 
             <ul className="mt-8 flex flex-col gap-3">

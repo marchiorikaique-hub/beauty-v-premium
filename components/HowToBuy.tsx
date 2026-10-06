@@ -1,10 +1,10 @@
 import { Reveal } from "./Reveal";
-import { Bag, WhatsApp, ChatHeart, Sparkle } from "./icons";
+import { BagHeart, WhatsApp, ChatHeart, Sparkle } from "./icons";
 import { waGeneral } from "@/lib/site";
 
 const steps = [
   {
-    icon: Bag,
+    icon: BagHeart,
     title: "Monte seu carrinho",
     text: "Escolha os queridinhos, a cor de cada um e a quantidade.",
   },
@@ -36,7 +36,7 @@ export function HowToBuy({ whatsapp }: { whatsapp: string }) {
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <h2
             id="how-title"
-            className="font-display text-4xl text-ink sm:text-5xl"
+            className="title-caps text-[2rem] text-ink sm:text-[2.6rem]"
           >
             Comprar é rapidinho
           </h2>

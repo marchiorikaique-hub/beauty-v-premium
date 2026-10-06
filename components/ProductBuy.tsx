@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useRef, useState } from "react";
 import { useCart } from "./cart/CartProvider";
-import { Bag, WhatsApp } from "./icons";
+import { BagHeart, WhatsApp } from "./icons";
 import { formatBRL } from "@/lib/format";
 import { waProduct } from "@/lib/site";
 import type { ProductVariant } from "@/lib/types";
@@ -166,8 +166,8 @@ export function BuyButtons({ whatsapp, url, children }: { whatsapp: string; url:
     <div className="mt-8 hidden flex-wrap gap-3 lg:flex">
       {buy.available ? (
         <>
-          <button type="button" onClick={buy.add} className="btn btn-primary px-7 py-4 text-base">
-            <Bag size={20} />
+          <button type="button" onClick={buy.add} className="btn btn-primary btn-caps px-8 py-4">
+            <BagHeart size={20} />
             Adicionar ao carrinho
           </button>
           <a href={buy.wa} target="_blank" rel="noopener noreferrer" className="btn btn-ghost px-6 py-4 text-base">
@@ -211,9 +211,9 @@ export function MobileBuyBar({ whatsapp, url }: { whatsapp: string; url: string 
             >
               <WhatsApp size={18} />
             </a>
-            <button type="button" onClick={buy.add} className="btn btn-primary shrink-0 px-5 py-3 text-sm">
-              <Bag size={18} />
-              Adicionar
+            <button type="button" onClick={buy.add} className="btn btn-primary btn-caps shrink-0 px-5 py-3">
+              <BagHeart size={18} />
+              Comprar
             </button>
           </>
         ) : (

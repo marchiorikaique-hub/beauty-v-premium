@@ -1,73 +1,40 @@
-import { Reveal } from "./Reveal";
-import { ArrowUpRight, Sparkle } from "./icons";
+import { SectionTitle } from "./SectionTitle";
+import { Sparkle } from "./icons";
 import type { Category } from "@/lib/types";
 
-export function CategoryTiles({ categories }: { categories: Category[] }) {
+/** Categorias principais em círculo, como no mockup da dona. */
+export function CategoryTiles({ categories, title }: { categories: Category[]; title: string }) {
   if (categories.length === 0) return null;
-  const cols =
-    categories.length >= 4 ? "lg:grid-cols-4" : categories.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-2";
   return (
-    <section className="shell py-16 sm:py-24" aria-labelledby="cat-title">
-      <div className="mb-10 flex flex-col gap-4 sm:mb-12 sm:flex-row sm:items-end sm:justify-between">
-        <h2 id="cat-title" className="max-w-lg font-display text-4xl text-ink sm:text-5xl">
-          Encontre pela sua vibe
-        </h2>
-        <p className="max-w-sm text-espresso/75">
-          Do gloss que todo mundo quer ao skincare da rotina, tudo separadinho pra você achar rápido.
-        </p>
-      </div>
-
-      <div className={`grid gap-4 sm:grid-cols-2 ${cols}`}>
-        {categories.map((cat, i) => (
-          <Reveal as="article" key={cat.id} delay={i * 70}>
-            <a
-              href={`#cat-${cat.slug}`}
-              className="group relative flex h-72 flex-col justify-end overflow-hidden rounded-3xl p-5 sm:h-80"
-            >
-              {cat.image ? (
-                <img
-                  src={cat.image}
-                  alt=""
-                  aria-hidden
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.07]"
-                />
-              ) : (
-                <div
-                  aria-hidden
-                  className="absolute inset-0 grid place-items-center"
-                  style={{
-                    background:
-                      "radial-gradient(90% 80% at 50% 30%, var(--color-rosa) 0%, var(--color-vinho) 78%)",
-                  }}
-                >
-                  <Sparkle size={56} className="-mt-16 text-champagne/40" />
-                </div>
-              )}
-              <div
-                aria-hidden
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(to top, rgba(60,14,22,0.86) 0%, rgba(60,14,22,0.3) 44%, rgba(60,14,22,0.05) 72%)",
-                }}
-              />
-              <div className="relative">
-                <h3 className="font-display text-2xl text-champagne-soft">{cat.name}</h3>
-                {cat.blurb && (
-                  <p className="mt-1 max-w-[15rem] text-sm leading-snug text-champagne/85">{cat.blurb}</p>
-                )}
-                <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-gold-soft">
-                  Ver produtos
-                  <ArrowUpRight
-                    size={16}
-                    className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                  />
+    <section className="shell pt-16 sm:pt-20" aria-labelledby="cat-title">
+      <SectionTitle id="cat-title" title={title} center />
+      <ul className="-mx-5 flex snap-x snap-mandatory scroll-px-5 gap-5 overflow-x-auto px-5 pb-2 sm:mx-0 sm:flex-wrap sm:justify-center sm:gap-x-8 sm:gap-y-8 sm:overflow-visible sm:px-0">
+        {categories.map((cat) => (
+          <li key={cat.id} className="w-[7.5rem] shrink-0 snap-start sm:w-[9.5rem]">
+            <a href={`#cat-${cat.slug}`} className="group flex flex-col items-center text-center">
+              <span className="relative block aspect-square w-full rounded-full" style={{ background: "linear-gradient(140deg, #f3cdbb, #c58a73 55%, #f0c2ae)" }}>
+                <span className="absolute inset-[3px] overflow-hidden rounded-full bg-cream">
+                  {cat.image ? (
+                    <img
+                      src={cat.image}
+                      alt=""
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
+                    />
+                  ) : (
+                    <span className="satin grid h-full w-full place-items-center">
+                      <Sparkle size={30} className="text-gold-soft/80" />
+                    </span>
+                  )}
                 </span>
-              </div>
+              </span>
+              <span className="title-caps mt-3.5 text-[1.05rem] text-ink transition-colors group-hover:text-vinho sm:text-lg">
+                {cat.name}
+              </span>
+              <span className="mt-1 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-taupe-deep">Ver produtos</span>
             </a>
-          </Reveal>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   );
 }

@@ -38,8 +38,10 @@ Sem travessão em qualquer texto visível.
 ## Identidade
 
 - Nome: **Beauty V Premium** (assinatura curta "Beauty V").
-- Logo real: brasão circular vinho com monograma "BV" em rosé-gold, estrela de 4
-  pontas e "BEAUTY V / PREMIUM". Usado no header/rodapé (`public/brand/badge.*`).
+- Logo nova (05/10/2026): brasão circular em cetim vinho profundo, "BV" e "BEAUTY V /
+  PREMIUM" em rose gold, estrelas de 4 pontas. Slogan: "Sua beleza elevada ao
+  extraordinário". Ela quer o site "mais elegante e feminino", tipografia Cormorant
+  Garamond + Montserrat. Não usar fotos de mulheres desconhecidas.
 - Paleta oficial passada pela cliente:
   - Rosa Antigo `#D8A7B1`
   - Off White `#F8F5F2`
@@ -70,7 +72,9 @@ painel pede que ela troque por uma só dela. Esqueceu a senha: o Kaique redefine
 - Cores e opções por produto (bolinhas de cor, foto por opção, opção esgotada).
 - Página inicial editável no painel (`/admin/inicio`): textos e fotos do topo e da
   faixa "Sobre", produto do cartãozinho.
-- Pendente: logo nova (ela vai mandar) e pagamento online (depende da conta dela no
+- Mesma noite: logo nova aplicada, redesign em cetim vinho e rose gold, slides editáveis,
+  Beauty V Club (link do grupo VIP no painel), coração no carrinho.
+- Pendente: link do grupo VIP (ela cola no painel) e pagamento online (depende da conta dela no
   Mercado Pago ou InfinitePay). Relançamento da marca no sábado 10/10.
 
 ## Constraints

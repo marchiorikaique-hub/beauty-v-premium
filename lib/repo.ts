@@ -28,7 +28,11 @@ export function getSettings(): StoreSettings {
   const out: StoreSettings = {
     ...seedSettings,
     announcements: [...seedSettings.announcements],
-    home: { ...seedSettings.home, storyPoints: [...seedSettings.home.storyPoints] },
+    home: {
+      ...seedSettings.home,
+      heroSlides: seedSettings.home.heroSlides.map((x) => ({ ...x })),
+      storyPoints: [...seedSettings.home.storyPoints],
+    },
   };
   for (const r of rows) {
     const key = str(r.key) as keyof StoreSettings;
@@ -498,7 +502,7 @@ export function referencedMedia(): Set<string> {
     .all() as Row[];
   const out = new Set(rows.map((r) => str(r.u)));
   const home = getSettings().home;
-  if (home.heroImage) out.add(home.heroImage.url);
+  for (const slide of home.heroSlides) if (slide.image) out.add(slide.image.url);
   if (home.storyImage) out.add(home.storyImage);
   return out;
 }
