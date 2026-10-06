@@ -212,6 +212,13 @@
     font-weight: 500;
     line-height: 1;
   }
+  /* trilho que rola de lado no celular sem barra aparecendo */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
   .script {
     font-family: var(--font-script);
     font-weight: 400;
@@ -399,6 +406,20 @@
   dialog.cart-drawer::backdrop {
     background: rgba(44, 35, 32, 0.42);
     backdrop-filter: blur(3px);
+  }
+  /* fotos do produto em tela cheia */
+  dialog.photo-viewer {
+    margin: 0;
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    padding: 0;
+    border: none;
+    background: #140308;
+  }
+  dialog.photo-viewer::backdrop {
+    background: #140308;
   }
   dialog.adm-dialog::backdrop {
     background: rgba(44, 35, 32, 0.45);

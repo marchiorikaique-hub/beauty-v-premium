@@ -68,7 +68,7 @@ export function Header({ categories, whatsapp }: HeaderProps) {
         scrolled || mega ? "shadow-[0_18px_40px_-24px_rgba(20,2,8,0.85)]" : ""
       }`}
     >
-      <div className="shell flex items-center justify-between gap-4 py-3 sm:py-3.5">
+      <div className="shell flex items-center justify-between gap-4 py-2 sm:py-3.5">
         <a href="/" aria-label="Beauty V Premium, início" className="shrink-0">
           <Logo />
         </a>
@@ -169,7 +169,7 @@ export function Header({ categories, whatsapp }: HeaderProps) {
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Fechar menu" : "Abrir menu"}
             aria-expanded={open}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-gold-soft/40 text-champagne-soft transition-colors hover:border-gold-soft hover:text-gold-soft lg:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gold-soft/40 text-champagne-soft transition-colors hover:border-gold-soft hover:text-gold-soft sm:h-11 sm:w-11 lg:hidden"
           >
             {open ? <Close /> : <Menu />}
           </button>

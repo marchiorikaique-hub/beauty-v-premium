@@ -16,7 +16,7 @@ export function ProductImageView({ image, alt, className = "", eager = false }: 
   const uploaded = image.url.startsWith("/media/");
   const base = "absolute inset-0 h-full w-full";
   const mode = image.cutout
-    ? `object-contain p-5 ${uploaded ? "drop-shadow-[0_18px_22px_rgba(58,40,34,0.22)]" : ""}`
+    ? `object-contain p-3 sm:p-5 ${uploaded ? "drop-shadow-[0_18px_22px_rgba(58,40,34,0.22)]" : ""}`
     : "object-cover";
   return (
     <img

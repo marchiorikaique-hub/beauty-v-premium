@@ -30,16 +30,16 @@ export function Logo({ variant = "mark", size = "md", className = "" }: LogoProp
         alt=""
         width={lg ? 58 : 46}
         height={lg ? 53 : 42}
-        className={lg ? "h-[53px] w-auto" : "h-[38px] w-auto sm:h-[44px]"}
+        className={lg ? "h-[53px] w-auto" : "h-[32px] w-auto sm:h-[44px]"}
       />
       <span className="flex flex-col items-center leading-none">
         <span
-          className={`title-caps whitespace-nowrap text-champagne-soft ${lg ? "text-[2rem]" : "text-[1.45rem] sm:text-[1.75rem]"}`}
+          className={`title-caps whitespace-nowrap text-champagne-soft ${lg ? "text-[2rem]" : "text-[1.22rem] sm:text-[1.75rem]"}`}
           style={{ letterSpacing: "0.08em" }}
         >
           Beauty V
         </span>
-        <span className="mt-1.5 flex w-full items-center gap-2 text-gold-soft">
+        <span className="mt-1 flex w-full items-center gap-2 text-gold-soft sm:mt-1.5">
           <span aria-hidden className="h-px flex-1 bg-gold-soft/60" />
           <span className="text-[0.55rem] font-medium uppercase tracking-[0.42em] sm:text-[0.6rem]">Premium</span>
           <span aria-hidden className="h-px flex-1 bg-gold-soft/60" />

@@ -11,7 +11,7 @@ export function CartButton() {
       type="button"
       onClick={() => setOpen(true)}
       aria-label={label}
-      className="relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-gold-soft/40 text-champagne-soft transition-colors hover:border-gold-soft hover:text-gold-soft"
+      className="relative inline-flex h-10 w-10 items-center sm:h-11 sm:w-11 justify-center rounded-full border border-gold-soft/40 text-champagne-soft transition-colors hover:border-gold-soft hover:text-gold-soft"
     >
       <BagHeart size={22} />
       {ready && count > 0 && (

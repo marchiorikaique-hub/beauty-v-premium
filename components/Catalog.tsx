@@ -57,7 +57,7 @@ export function Catalog({ title, text, products, tree, whatsapp, siteUrl }: Cata
   const activeName = all.find((f) => f.slug === active)?.name ?? "";
 
   return (
-    <section id="catalogo" className="scroll-mt-24 bg-offwhite pb-16 pt-16 sm:pb-24 sm:pt-20">
+    <section id="catalogo" className="scroll-mt-24 bg-offwhite pb-14 pt-10 sm:pb-24 sm:pt-20">
       {all.map((c) => (
         <span key={c.slug} id={`cat-${c.slug}`} aria-hidden className="block h-0 scroll-mt-28" />
       ))}
@@ -65,8 +65,12 @@ export function Catalog({ title, text, products, tree, whatsapp, siteUrl }: Cata
       <div className="shell">
         <SectionTitle title={title} text={text} />
 
-        <div className="mb-9 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div role="tablist" aria-label="Filtrar por categoria" className="flex flex-wrap gap-2.5">
+        <div className="mb-6 flex flex-col gap-3 sm:mb-9 sm:gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div
+            role="tablist"
+            aria-label="Filtrar por categoria"
+            className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:flex-wrap sm:gap-2.5 sm:overflow-visible sm:px-0 sm:pb-0"
+          >
             {filters.map((f) => {
               const isActive = f.slug === TUDO ? active === TUDO : activeRoot?.slug === f.slug;
               return (
@@ -76,7 +80,7 @@ export function Catalog({ title, text, products, tree, whatsapp, siteUrl }: Cata
                   aria-selected={isActive}
                   type="button"
                   onClick={() => pick(f.slug)}
-                  className={`rounded-full border px-5 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.12em] transition-all duration-300 ${
+                  className={`shrink-0 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-[0.64rem] font-semibold uppercase tracking-[0.1em] transition-all duration-300 sm:px-5 sm:py-2 sm:text-[0.72rem] sm:tracking-[0.12em] ${
                     isActive
                       ? "border-vinho bg-vinho text-champagne-soft shadow-[0_12px_24px_-14px_rgba(74,10,30,0.8)]"
                       : "border-espresso/15 bg-cream text-espresso hover:border-vinho hover:text-vinho"
@@ -108,7 +112,7 @@ export function Catalog({ title, text, products, tree, whatsapp, siteUrl }: Cata
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Buscar por nome ou marca"
-              className="w-full rounded-full border border-espresso/15 bg-cream py-2.5 pl-11 pr-4 text-sm text-ink placeholder:text-taupe-deep focus:border-vinho focus:outline-none focus-visible:outline-2 focus-visible:outline-vinho"
+              className="w-full rounded-full border border-espresso/15 bg-cream py-2 pl-11 pr-4 text-sm sm:py-2.5 text-ink placeholder:text-taupe-deep focus:border-vinho focus:outline-none focus-visible:outline-2 focus-visible:outline-vinho"
             />
           </label>
         </div>
@@ -117,7 +121,7 @@ export function Catalog({ title, text, products, tree, whatsapp, siteUrl }: Cata
           <div
             role="tablist"
             aria-label={`Subcategorias de ${activeRoot.name}`}
-            className="-mt-4 mb-9 flex flex-wrap items-center gap-x-1 gap-y-2 border-l-2 border-champagne pl-3"
+            className="no-scrollbar -mx-5 -mt-2 mb-6 flex items-center gap-1 overflow-x-auto px-5 sm:mx-0 sm:-mt-4 sm:mb-9 sm:flex-wrap sm:gap-y-2 sm:overflow-visible sm:px-0"
           >
             {[{ slug: activeRoot.slug, name: `Tudo em ${activeRoot.name}` }, ...activeRoot.children].map((s) => {
               const on = active === s.slug;
@@ -128,7 +132,7 @@ export function Catalog({ title, text, products, tree, whatsapp, siteUrl }: Cata
                   aria-selected={on}
                   type="button"
                   onClick={() => pick(s.slug)}
-                  className={`rounded-full px-3.5 py-1.5 text-sm transition-colors duration-200 ${
+                  className={`shrink-0 whitespace-nowrap rounded-full px-3 py-1 text-[0.8rem] transition-colors duration-200 sm:px-3.5 sm:py-1.5 sm:text-sm ${
                     on ? "bg-champagne-soft font-medium text-vinho" : "text-espresso/80 hover:text-vinho"
                   }`}
                 >
@@ -140,7 +144,7 @@ export function Catalog({ title, text, products, tree, whatsapp, siteUrl }: Cata
         )}
 
         {shown.length > 0 ? (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
             {shown.map((p) => (
               <ProductCard key={p.id} product={p} whatsapp={whatsapp} siteUrl={siteUrl} />
             ))}

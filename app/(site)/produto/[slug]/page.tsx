@@ -80,8 +80,8 @@ export default async function ProductPage({ params }: Params) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
 
-      <div className="shell pb-32 pt-6 sm:pt-10 lg:pb-24">
-        <nav aria-label="Você está em" className="mb-6 text-sm text-taupe-deep sm:mb-8">
+      <div className="shell pb-32 pt-4 sm:pt-10 lg:pb-24">
+        <nav aria-label="Você está em" className="mb-4 text-xs text-taupe-deep sm:mb-8 sm:text-sm">
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>
               <a href="/" className="hover:text-vinho">
@@ -116,7 +116,7 @@ export default async function ProductPage({ params }: Params) {
         </nav>
 
         <ProductSelection product={buyProduct}>
-        <div className="grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+        <div className="grid items-start gap-6 sm:gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
           <div className="lg:sticky lg:top-28">
             <ProductGallery images={p.images} name={p.name} soldOut={!p.inStock} />
           </div>
@@ -127,7 +127,7 @@ export default async function ProductPage({ params }: Params) {
               {p.categoryName ?? "Beauty V"}
               {p.brand ? ` · ${p.brand}` : ""}
             </p>
-            <h1 className="mt-3 font-display text-4xl leading-[1.05] text-ink sm:text-5xl">{p.name}</h1>
+            <h1 className="mt-2 font-display text-[1.9rem] font-semibold leading-[1.08] text-ink sm:mt-3 sm:text-5xl sm:font-medium">{p.name}</h1>
 
             <div className="mt-5 flex flex-wrap gap-2">
               <span
@@ -153,7 +153,7 @@ export default async function ProductPage({ params }: Params) {
             <div className="mt-6">
               {p.priceCents != null ? (
                 <p className="flex flex-wrap items-baseline gap-3">
-                  <span className="text-3xl font-semibold text-ink">{formatBRL(p.priceCents)}</span>
+                  <span className="text-2xl font-semibold text-ink sm:text-3xl">{formatBRL(p.priceCents)}</span>
                   {p.compareAtCents != null && off && (
                     <>
                       <span className="text-lg text-taupe-deep line-through">{formatBRL(p.compareAtCents)}</span>
@@ -213,7 +213,7 @@ export default async function ProductPage({ params }: Params) {
             <h2 id="relacionados" className="mb-8 font-display text-3xl text-ink sm:text-4xl">
               Você também pode gostar
             </h2>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
               {related.map((r) => (
                 <ProductCard key={r.id} product={r} whatsapp={settings.whatsapp} siteUrl={siteUrl} />
               ))}
