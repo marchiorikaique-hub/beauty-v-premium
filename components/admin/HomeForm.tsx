@@ -258,8 +258,8 @@ export function HomeForm({ home, links }: HomeFormProps) {
                     </div>
                     <div className="flex flex-col gap-4">
                       <p className="adm-help !mt-0 sm:pt-7">
-                        PNG <strong>sem fundo</strong> fica flutuando com brilho. Foto normal aparece num quadro com cantos
-                        arredondados.
+                        Foto de pessoa ou ambiente ocupa a metade esquerda e se funde no vinho, igual ao modelo que você
+                        mandou. PNG <strong>sem fundo</strong> (produto) fica flutuando com brilho.
                       </p>
                       <div className="grid gap-4 sm:grid-cols-2">
                         <Field id={`s-c-${i}`} label="Texto do botão" max={24} value={s.cta} error={err("cta")}>
@@ -336,7 +336,10 @@ export function HomeForm({ home, links }: HomeFormProps) {
             <h2 id="h-sobre" className="text-lg">
               Sobre a loja
             </h2>
-            <p className="adm-help !mt-1">A faixa de cetim vinho no meio da página, com a sua história.</p>
+            <p className="adm-help !mt-1">
+              A faixa de cetim vinho no meio da página. A foto ocupa a metade esquerda e se funde no vinho (fica linda com
+              foto de boca, rosto ou maquiagem).
+            </p>
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2">

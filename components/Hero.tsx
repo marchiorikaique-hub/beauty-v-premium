@@ -54,6 +54,8 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
         {slides.map((s, i) => {
           const on = i === index;
           const img = s.image;
+          // foto "normal" (pessoa, ambiente) ocupa a metade da faixa e se funde no cetim
+          const photo = !!img && !img.cutout;
           return (
             <div
               key={i}
@@ -62,10 +64,26 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
               aria-label={`${i + 1} de ${count}`}
               aria-hidden={!on}
               inert={!on}
-              className={`hero-slide [grid-area:1/1] ${on ? "is-on" : ""}`}
+              className={`hero-slide relative [grid-area:1/1] ${on ? "is-on" : ""}`}
             >
-              <div className="shell grid min-h-[34rem] items-center gap-6 pb-20 pt-8 sm:min-h-[36rem] lg:grid-cols-[1fr_1.05fr] lg:gap-12 lg:py-16">
+              {photo && img && (
+                <div
+                  aria-hidden
+                  className="hero-media photo-fade absolute inset-x-0 top-0 h-[21rem] sm:h-[25rem] lg:inset-y-0 lg:right-auto lg:h-auto lg:w-[56%]"
+                >
+                  <img
+                    src={img.url}
+                    alt=""
+                    loading={i === 0 ? "eager" : "lazy"}
+                    className="absolute inset-0 h-full w-full object-cover object-[50%_22%]"
+                  />
+                                  </div>
+              )}
+              <div className="shell relative grid min-h-[34rem] items-center gap-6 pb-20 pt-8 sm:min-h-[36rem] lg:grid-cols-[1fr_1.05fr] lg:gap-12 lg:py-16">
                 {/* foto */}
+                {photo ? (
+                  <div aria-hidden className="h-[15.5rem] sm:h-[19rem] lg:h-auto" />
+                ) : (
                 <div className="hero-media relative order-1 mx-auto aspect-square w-full max-w-[19rem] sm:max-w-sm lg:order-none lg:max-w-none">
                   {img && img.cutout && (
                     <>
@@ -86,11 +104,6 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
                       />
                     </>
                   )}
-                  {img && !img.cutout && (
-                    <div className="absolute inset-0 overflow-hidden rounded-[2rem] ring-1 ring-gold-soft/30">
-                      <img src={img.url} alt="" loading={i === 0 ? "eager" : "lazy"} className="h-full w-full object-cover" />
-                    </div>
-                  )}
                   {!img && (
                     <img
                       src="/brand/badge.webp"
@@ -101,6 +114,7 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
                   <Sparkle size={22} className="absolute right-[6%] top-[8%] text-gold-soft/80" />
                   <Sparkle size={13} className="absolute bottom-[14%] left-[4%] text-rosa/70" />
                 </div>
+                )}
 
                 {/* texto */}
                 <div className="hero-copy relative text-center lg:text-left">

@@ -468,6 +468,18 @@
 .hero-slide.is-on .hero-copy {
   transform: none;
 }
+/* foto que se funde no cetim: some por transparência (embaixo no celular, à direita no computador) */
+.photo-fade {
+  -webkit-mask-image: linear-gradient(to bottom, #000 45%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 45%, transparent 100%);
+}
+@media (min-width: 1024px) {
+  .photo-fade {
+    -webkit-mask-image: linear-gradient(to right, #000 48%, transparent 100%);
+    mask-image: linear-gradient(to right, #000 48%, transparent 100%);
+  }
+}
+
 .satin-sheen {
   background: linear-gradient(105deg, transparent 38%, rgba(255, 205, 222, 0.11) 47%, transparent 56%);
   background-size: 260% 100%;
