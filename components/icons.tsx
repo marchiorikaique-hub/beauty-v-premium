@@ -264,3 +264,13 @@ export const Star = (p: IconProps & { size?: number }) => (
     <path d="m12 3.8 2.5 5.1 5.6.8-4 3.9 1 5.6L12 16.6l-5.1 2.6 1-5.6-4-3.9 5.6-.8L12 3.8Z" />
   </Stroke>
 );
+export const Minus = (p: IconProps & { size?: number }) => (
+  <Stroke {...p}>
+    <path d="M5 12h14" />
+  </Stroke>
+);
+export const ChevronDown = (p: IconProps & { size?: number }) => (
+  <Stroke {...p}>
+    <path d="m6 9 6 6 6-6" />
+  </Stroke>
+);

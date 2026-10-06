@@ -8,7 +8,7 @@ import {
   trashProductAction,
   type ActionResult,
 } from "@/app/admin/actions";
-import type { Product, ProductImage } from "@/lib/types";
+import type { Product, ProductImage, ProductVariant } from "@/lib/types";
 import { discountPercent } from "@/lib/format";
 import { ArrowLeft, Copy, ExternalLink, Trash } from "../icons";
 import { ConfirmDialog } from "./ConfirmDialog";
@@ -16,6 +16,7 @@ import { ImageManager } from "./ImageManager";
 import { PriceInput } from "./PriceInput";
 import { Switch } from "./Switch";
 import { useToast } from "./Toast";
+import { VariantEditor } from "./VariantEditor";
 
 interface FormState {
   name: string;
@@ -31,11 +32,13 @@ interface FormState {
   featured: boolean;
   isNew: boolean;
   images: ProductImage[];
+  variantLabel: string;
+  variants: ProductVariant[];
 }
 
 interface ProductFormProps {
   product: Product | null;
-  categories: { id: number; name: string }[];
+  categories: { id: number; name: string; parentId: number | null }[];
 }
 
 function initialState(p: Product | null, categories: { id: number }[]): FormState {
@@ -54,6 +57,8 @@ function initialState(p: Product | null, categories: { id: number }[]): FormStat
       featured: false,
       isNew: true,
       images: [],
+      variantLabel: "Cor",
+      variants: [],
     };
   }
   return {
@@ -70,6 +75,8 @@ function initialState(p: Product | null, categories: { id: number }[]): FormStat
     featured: p.featured,
     isNew: p.isNew,
     images: p.images,
+    variantLabel: p.variantLabel || "Cor",
+    variants: p.variants,
   };
 }
 
@@ -165,6 +172,13 @@ export function ProductForm({ product, categories }: ProductFormProps) {
 
   const off = discountPercent(form.priceCents, form.compareAtCents);
   const errorList = Object.entries(errors).filter(([k, v]) => v && !k.includes("."));
+  // fotos removidas deixam de valer como foto de uma opção
+  useEffect(() => {
+    const urls = new Set(form.images.map((i) => i.url));
+    if (form.variants.some((v) => v.image && !urls.has(v.image))) {
+      setForm((f) => ({ ...f, variants: f.variants.map((v) => (v.image && !urls.has(v.image) ? { ...v, image: "" } : v)) }));
+    }
+  }, [form.images, form.variants]);
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -353,6 +367,29 @@ export function ProductForm({ product, categories }: ProductFormProps) {
                 <p className="adm-help">Aparece na página do produto. Opcional.</p>
               )}
             </div>
+          </section>
+
+          <section className="adm-card p-5 sm:p-6" aria-labelledby="sec-var">
+            <div className="mb-4">
+              <h2 id="sec-var" className="text-lg">
+                Cores e opções
+              </h2>
+              <p className="adm-help !mt-1">
+                Tem várias cores, tons ou fragrâncias? Cadastre cada uma aqui. Na loja aparecem as bolinhas pra cliente
+                escolher, e a escolhida vai junto no pedido. Sem opções, é só pular.
+              </p>
+            </div>
+            <VariantEditor
+              label={form.variantLabel}
+              variants={form.variants}
+              images={form.images}
+              errors={errors}
+              onLabelChange={(v) => set("variantLabel", v)}
+              onChange={(v) => {
+                set("variants", v);
+                setErrors((e) => Object.fromEntries(Object.entries(e).filter(([k]) => !k.startsWith("variants"))));
+              }}
+            />
           </section>
         </div>
 

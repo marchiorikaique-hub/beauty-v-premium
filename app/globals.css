@@ -301,6 +301,46 @@
     opacity: 0.35;
     cursor: not-allowed;
   }
+  /* seletor de cor redondo (painel: cores do produto) */
+  .swatch-input {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0;
+    background: none;
+    border: 3px solid var(--color-cream);
+    box-shadow: 0 0 0 1px rgba(75, 60, 53, 0.28);
+  }
+  .swatch-input::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  .swatch-input::-webkit-color-swatch {
+    border: none;
+    border-radius: 9999px;
+  }
+  .swatch-input::-moz-color-swatch {
+    border: none;
+    border-radius: 9999px;
+  }
+  /* carrinho: gaveta que entra pela direita */
+  dialog.cart-drawer {
+    margin: 0 0 0 auto;
+    height: 100dvh;
+    max-height: 100dvh;
+    width: 100%;
+    max-width: 28rem;
+    padding: 0;
+    border: none;
+    background: var(--color-offwhite);
+    color: var(--color-ink);
+    box-shadow: -30px 0 80px -40px rgba(44, 35, 32, 0.55);
+  }
+  dialog.cart-drawer[open] {
+    animation: bv-drawer-in 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  dialog.cart-drawer::backdrop {
+    background: rgba(44, 35, 32, 0.42);
+    backdrop-filter: blur(3px);
+  }
   dialog.adm-dialog::backdrop {
     background: rgba(44, 35, 32, 0.45);
     backdrop-filter: blur(2px);
@@ -342,6 +382,30 @@
   animation: bv-marquee 34s linear infinite;
 }
 
+@keyframes bv-drawer-in {
+  from {
+    transform: translateX(100%);
+  }
+}
+@keyframes bv-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+.toast-in {
+  animation: bv-toast-in 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cart-badge {
+  animation: bv-pop 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes bv-pop {
+  from {
+    transform: scale(0.4);
+  }
+}
+
 @keyframes bv-spin {
   to {
     transform: rotate(360deg);
@@ -353,7 +417,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .marquee-track,
-  .slow-spin {
+  .slow-spin,
+  .toast-in,
+  .cart-badge,
+  dialog.cart-drawer[open] {
     animation: none;
   }
 }

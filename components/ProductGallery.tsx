@@ -1,11 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ProductImageView } from "./ProductImageView";
+import { useProductSelection } from "./ProductBuy";
 import type { ProductImage } from "@/lib/types";
 
 export function ProductGallery({ images, name, soldOut }: { images: ProductImage[]; name: string; soldOut: boolean }) {
   const [index, setIndex] = useState(0);
+  // escolheu uma cor que tem foto: a galeria vai pra ela
+  const target = useProductSelection()?.variant?.image;
+  useEffect(() => {
+    if (!target) return;
+    const i = images.findIndex((img) => img.url === target);
+    if (i >= 0) setIndex(i);
+  }, [target, images]);
   const current = images[index] ?? images[0];
   return (
     <div className="flex flex-col gap-3">

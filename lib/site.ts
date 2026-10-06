@@ -15,8 +15,12 @@ export function waGeneral(number: string): string {
   return whatsappLink(number, "Oi! Vim pelo site da Beauty V Premium e quero ver as novidades. ✨");
 }
 
-export function waProduct(number: string, p: { name: string; brand?: string; url?: string; inStock?: boolean }): string {
-  const marca = p.brand ? ` (${p.brand})` : "";
+export function waProduct(
+  number: string,
+  p: { name: string; brand?: string; url?: string; inStock?: boolean; variant?: string; variantLabel?: string },
+): string {
+  const opt = p.variant ? `, ${(p.variantLabel || "opção").toLowerCase()} ${p.variant}` : "";
+  const marca = p.brand ? ` (${p.brand}${opt})` : opt ? ` (${opt.slice(2)})` : "";
   const link = p.url ? `\n${p.url}` : "";
   const msg =
     p.inStock === false

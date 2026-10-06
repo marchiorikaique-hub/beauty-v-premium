@@ -2,11 +2,12 @@
 
 import { usePathname } from "next/navigation";
 import { logoutAction } from "@/app/admin/actions";
-import { Box, ExternalLink, Logout, Store, Tag, Trash, User } from "../icons";
+import { Box, ExternalLink, Logout, Photo, Store, Tag, Trash, User } from "../icons";
 
 const items = [
   { href: "/admin", label: "Produtos", icon: Box, match: (p: string) => p === "/admin" || p.startsWith("/admin/produtos") },
   { href: "/admin/categorias", label: "Categorias", icon: Tag, match: (p: string) => p.startsWith("/admin/categorias") },
+  { href: "/admin/inicio", label: "Página inicial", short: "Início", icon: Photo, match: (p: string) => p.startsWith("/admin/inicio") },
   { href: "/admin/loja", label: "Loja", icon: Store, match: (p: string) => p.startsWith("/admin/loja") },
   { href: "/admin/lixeira", label: "Lixeira", icon: Trash, match: (p: string) => p.startsWith("/admin/lixeira"), desktopOnly: true },
   { href: "/admin/conta", label: "Minha conta", short: "Conta", icon: User, match: (p: string) => p.startsWith("/admin/conta") },
@@ -94,7 +95,7 @@ export function AdminNav({ email }: { email: string }) {
         aria-label="Painel"
         className="fixed inset-x-0 bottom-0 z-40 border-t border-espresso/10 bg-offwhite/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"
       >
-        <ul className="grid grid-cols-4">
+        <ul className="grid grid-cols-5">
           {items
             .filter((i) => !i.desktopOnly)
             .map(({ href, label, short, icon: Icon, match }) => {

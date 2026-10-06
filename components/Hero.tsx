@@ -1,6 +1,7 @@
 import { Reveal } from "./Reveal";
 import { Sparkle, ArrowRight, WhatsApp, Bag, Calendar, ChatHeart } from "./icons";
 import { waGeneral } from "@/lib/site";
+import type { HomeContent, Product } from "@/lib/types";
 
 const trust = [
   { icon: Bag, label: "Pronta-entrega" },
@@ -8,7 +9,9 @@ const trust = [
   { icon: ChatHeart, label: "Atendimento no WhatsApp" },
 ];
 
-export function Hero({ whatsapp }: { whatsapp: string }) {
+export function Hero({ home, product, whatsapp }: { home: HomeContent; product: Product | null; whatsapp: string }) {
+  const img = home.heroImage;
+  const cardImg = product?.images[0];
   return (
     <section
       id="top"
@@ -38,18 +41,18 @@ export function Hero({ whatsapp }: { whatsapp: string }) {
               id="hero-title"
               className="font-display text-[2.9rem] font-medium leading-[1.02] text-ink sm:text-6xl"
             >
-              Beleza premium,
-              <br />
-              <span className="italic text-vinho">em pronta-entrega.</span>
+              {home.heroTitle}
+              {home.heroHighlight && (
+                <>
+                  <br />
+                  <span className="italic text-vinho">{home.heroHighlight}</span>
+                </>
+              )}
             </h1>
           </Reveal>
 
           <Reveal delay={140}>
-            <p className="mt-6 max-w-md text-[1.06rem] leading-relaxed text-espresso/85">
-              Maquiagem, skincare, perfumaria e os queridinhos que viralizam,
-              selecionados com carinho e prontinhos pra enviar. Novidades toda
-              semana.
-            </p>
+            <p className="mt-6 max-w-md text-[1.06rem] leading-relaxed text-espresso/85">{home.heroText}</p>
           </Reveal>
 
           <Reveal delay={210}>
@@ -124,14 +127,35 @@ export function Hero({ whatsapp }: { whatsapp: string }) {
                 className="absolute left-9 top-24 text-champagne/70"
               />
 
-              {/* produto principal */}
-              <img
-                src="/products/p03.webp"
-                alt="Body Splash Glow, linha de fragrâncias da Beauty V Premium"
-                width={520}
-                height={520}
-                className="absolute left-1/2 top-[34%] w-[82%] -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_30px_50px_rgba(40,15,20,0.5)]"
-              />
+              {/* foto do quadro: PNG sem fundo flutua; foto normal preenche */}
+              {img && img.cutout && (
+                <img
+                  src={img.url}
+                  alt=""
+                  width={520}
+                  height={520}
+                  className="absolute left-1/2 top-[34%] max-h-[62%] w-[82%] -translate-x-1/2 -translate-y-1/2 object-contain drop-shadow-[0_30px_50px_rgba(40,15,20,0.5)]"
+                />
+              )}
+              {img && !img.cutout && (
+                <>
+                  <img src={img.url} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                  <div
+                    aria-hidden
+                    className="absolute inset-0"
+                    style={{ background: "linear-gradient(to top, rgba(60,14,22,0.55) 0%, rgba(60,14,22,0) 45%)" }}
+                  />
+                </>
+              )}
+              {!img && (
+                <img
+                  src="/brand/badge.webp"
+                  alt=""
+                  width={220}
+                  height={220}
+                  className="absolute left-1/2 top-[38%] w-[42%] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-90 shadow-[0_30px_60px_-20px_rgba(40,15,20,0.8)]"
+                />
+              )}
 
               {/* etiqueta pronta-entrega */}
               <div className="absolute right-6 top-1/2 flex items-center gap-2 rounded-full bg-offwhite/95 px-4 py-2 shadow-lg backdrop-blur">
@@ -142,21 +166,28 @@ export function Hero({ whatsapp }: { whatsapp: string }) {
               </div>
 
               {/* card de produto flutuante */}
-              <div className="absolute bottom-5 left-5 flex items-center gap-3 rounded-2xl bg-cream/95 p-3 pr-5 shadow-[0_20px_40px_-20px_rgba(40,15,20,0.7)] backdrop-blur">
-                <div className="grid h-16 w-16 place-items-center overflow-hidden rounded-xl bg-champagne-soft">
-                  <img
-                    src="/products/p12.webp"
-                    alt="Tinted Balm Feels Mood, Ruby Rose"
-                    width={64}
-                    height={64}
-                    className="h-14 w-14 object-contain"
-                  />
-                </div>
-                <div className="leading-tight">
-                  <p className="font-display text-base text-ink">Tinted Balm</p>
-                  <p className="text-xs text-taupe-deep">Cor + hidratação</p>
-                </div>
-              </div>
+              {product && (
+                <a
+                  href={`/produto/${product.slug}`}
+                  className="absolute bottom-5 left-5 flex max-w-[calc(100%-2.5rem)] items-center gap-3 rounded-2xl bg-cream/95 p-3 pr-5 shadow-[0_20px_40px_-20px_rgba(40,15,20,0.7)] backdrop-blur transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1"
+                >
+                  <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-champagne-soft">
+                    {cardImg && (
+                      <img
+                        src={cardImg.url}
+                        alt=""
+                        width={64}
+                        height={64}
+                        className={cardImg.cutout ? "h-14 w-14 object-contain" : "h-full w-full object-cover"}
+                      />
+                    )}
+                  </div>
+                  <div className="min-w-0 leading-tight">
+                    <p className="truncate font-display text-base text-ink">{product.name}</p>
+                    <p className="truncate text-xs text-taupe-deep">{product.detail || product.brand || "Ver produto"}</p>
+                  </div>
+                </a>
+              )}
             </div>
           </div>
         </Reveal>

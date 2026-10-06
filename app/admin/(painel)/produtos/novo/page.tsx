@@ -1,11 +1,11 @@
 import { ProductForm } from "@/components/admin/ProductForm";
 import { requireUser } from "@/lib/auth";
-import { listCategories } from "@/lib/repo";
+import { categoryChoices } from "@/lib/repo";
 
 export const metadata = { title: "Novo produto" };
 
 export default async function NewProductPage() {
   await requireUser();
-  const categories = listCategories().map((c) => ({ id: c.id, name: c.name }));
+  const categories = categoryChoices();
   return <ProductForm product={null} categories={categories} />;
 }

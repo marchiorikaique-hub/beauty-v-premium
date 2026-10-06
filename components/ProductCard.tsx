@@ -1,5 +1,6 @@
-import { WhatsApp } from "./icons";
+import { ArrowRight, WhatsApp } from "./icons";
 import { ProductImageView } from "./ProductImageView";
+import { AddToCartButton } from "./cart/AddToCartButton";
 import { waProduct } from "@/lib/site";
 import { discountPercent, formatBRL } from "@/lib/format";
 import type { Product } from "@/lib/types";
@@ -14,6 +15,8 @@ export function ProductCard({ product: p, whatsapp, siteUrl }: ProductCardProps)
   const href = `/produto/${p.slug}`;
   const off = discountPercent(p.priceCents, p.compareAtCents);
   const cover = p.images[0];
+  const swatches = p.variants.filter((v) => v.color);
+  const ask = waProduct(whatsapp, { name: p.name, brand: p.brand, url: `${siteUrl}${href}`, inStock: p.inStock });
   return (
     <article className="group flex flex-col overflow-hidden rounded-3xl border border-espresso/8 bg-cream shadow-[var(--shadow-card)] transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-[var(--shadow-lift)]">
       <a href={href} className="flex flex-1 flex-col focus-visible:outline-offset-[-3px]">
@@ -58,6 +61,7 @@ export function ProductCard({ product: p, whatsapp, siteUrl }: ProductCardProps)
 
         <div className="flex flex-1 flex-col px-5 pt-5">
           <p className="text-[0.66rem] font-medium uppercase tracking-[0.2em] text-taupe-deep">
+            {p.parentCategoryName ? `${p.parentCategoryName} · ` : ""}
             {p.categoryName ?? "Beauty V"}
             {p.brand ? ` · ${p.brand}` : ""}
           </p>
@@ -65,6 +69,30 @@ export function ProductCard({ product: p, whatsapp, siteUrl }: ProductCardProps)
             {p.name}
           </h3>
           {p.blurb && <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-espresso/75">{p.blurb}</p>}
+          {p.variants.length > 0 && (
+            <p className="mt-3 flex items-center gap-1.5 text-xs text-espresso/75">
+              {swatches.length > 0 ? (
+                <>
+                  <span className="flex -space-x-1" aria-hidden>
+                    {swatches.slice(0, 6).map((v) => (
+                      <span
+                        key={v.name}
+                        className="h-4 w-4 rounded-full ring-2 ring-cream"
+                        style={{ background: v.color }}
+                      />
+                    ))}
+                  </span>
+                  <span>
+                    {p.variants.length} {p.variants.length === 1 ? "opção" : "opções"}
+                  </span>
+                </>
+              ) : (
+                <span>
+                  {p.variants.length} {p.variants.length === 1 ? "opção" : "opções"} de {(p.variantLabel || "opção").toLowerCase()}
+                </span>
+              )}
+            </p>
+          )}
 
           <div className="mt-auto flex flex-wrap items-end justify-between gap-2 pt-4">
             {p.priceCents != null ? (
@@ -86,19 +114,39 @@ export function ProductCard({ product: p, whatsapp, siteUrl }: ProductCardProps)
         </div>
       </a>
 
-      <div className="px-5 pb-5 pt-4">
-        <a
-          href={waProduct(whatsapp, { name: p.name, brand: p.brand, url: `${siteUrl}${href}`, inStock: p.inStock })}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`btn w-full py-3 text-sm ${p.inStock ? "btn-primary" : "btn-ghost"}`}
-          aria-label={p.inStock ? `Comprar ${p.name} no WhatsApp` : `Pedir aviso quando ${p.name} chegar`}
-        >
-          <WhatsApp size={17} />
-          {p.inStock ? "Comprar no WhatsApp" : "Avise-me quando chegar"}
-        </a>
-        {p.priceCents == null && p.inStock && (
-          <p className="mt-2.5 text-center text-xs text-taupe-deep">Valores e cores combinados no WhatsApp</p>
+      <div className="flex gap-2 px-5 pb-5 pt-4">
+        {!p.inStock ? (
+          <a
+            href={ask}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-ghost w-full py-3 text-sm"
+            aria-label={`Pedir aviso quando ${p.name} chegar`}
+          >
+            <WhatsApp size={17} />
+            Avise-me quando chegar
+          </a>
+        ) : (
+          <>
+            {p.variants.length > 0 ? (
+              <a href={href} className="btn btn-primary min-w-0 flex-1 py-3 text-sm">
+                Escolher {(p.variantLabel || "opção").toLowerCase()}
+                <ArrowRight size={17} />
+              </a>
+            ) : (
+              <AddToCartButton productId={p.id} className="min-w-0 flex-1 py-3 text-sm" label="Adicionar" />
+            )}
+            <a
+              href={ask}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-ghost shrink-0 px-3.5 py-3"
+              aria-label={`Perguntar sobre ${p.name} no WhatsApp`}
+              title="Perguntar no WhatsApp"
+            >
+              <WhatsApp size={18} />
+            </a>
+          </>
         )}
       </div>
     </article>

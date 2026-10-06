@@ -57,7 +57,13 @@ export function SettingsForm({ settings }: { settings: StoreSettings }) {
     <div className="mx-auto max-w-3xl">
       <div className="mb-6">
         <h1 className="text-2xl sm:text-[1.75rem]">Loja</h1>
-        <p className="mt-1 text-sm text-taupe-deep">Contato e avisos que aparecem no site inteiro.</p>
+        <p className="mt-1 text-sm text-taupe-deep">
+          Contato e avisos que aparecem no site inteiro. As frases e fotos da home ficam em{" "}
+          <a href="/admin/inicio" className="font-medium text-vinho underline underline-offset-2">
+            Página inicial
+          </a>
+          .
+        </p>
       </div>
 
       <form

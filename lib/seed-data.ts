@@ -14,6 +14,22 @@ export const seedSettings: StoreSettings = {
     "Atendimento no WhatsApp",
     "Várias formas de pagamento",
   ],
+  home: {
+    heroTitle: "Beleza premium,",
+    heroHighlight: "em pronta-entrega.",
+    heroText:
+      "Maquiagem, skincare, perfumaria e os queridinhos que viralizam, selecionados com carinho e prontinhos pra enviar. Novidades toda semana.",
+    heroImage: { url: "/products/p03.webp", cutout: true, width: 1000, height: 1000 },
+    heroProductSlug: "tinted-balm-feels",
+    storyTitle: "Beleza é cuidado, e cuidado",
+    storyHighlight: "mora no detalhe.",
+    storyText1:
+      "A Beauty V Premium nasceu pra deixar a sua rotina de beleza mais fácil e mais gostosa. A gente garimpa maquiagem, skincare e perfumaria das marcas queridinhas e deixa tudo em pronta-entrega, pra chegar rápido na sua mão.",
+    storyText2:
+      "Nada de robô: o atendimento é de gente pra gente, direto no WhatsApp. Você escolhe, tira dúvida de cor e de aroma, e a gente combina o melhor jeito de pagar e receber.",
+    storyImage: "/lifestyle/cereja.webp",
+    storyPoints: ["Curadoria de marcas queridinhas", "Pronta-entrega de verdade", "Atendimento de gente pra gente"],
+  },
 };
 
 export const seedCategories = [

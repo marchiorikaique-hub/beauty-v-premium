@@ -4,11 +4,11 @@ import { useEffect, useMemo, useState } from "react";
 import { ProductCard } from "./ProductCard";
 import { WhatsApp, Sparkle } from "./icons";
 import { waCategory, waGeneral } from "@/lib/site";
-import type { Product } from "@/lib/types";
+import type { CategoryNode, Product } from "@/lib/types";
 
 interface CatalogProps {
   products: Product[];
-  categories: { slug: string; name: string }[];
+  tree: CategoryNode[];
   whatsapp: string;
   siteUrl: string;
 }
@@ -19,36 +19,43 @@ function normalize(s: string) {
   return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 }
 
-export function Catalog({ products, categories, whatsapp, siteUrl }: CatalogProps) {
+export function Catalog({ products, tree, whatsapp, siteUrl }: CatalogProps) {
   const [active, setActive] = useState<string>(TUDO);
   const [query, setQuery] = useState("");
 
-  const filters = useMemo(() => [{ slug: TUDO, name: "Tudo" }, ...categories], [categories]);
+  const filters = useMemo(() => [{ slug: TUDO, name: "Tudo", children: [] }, ...tree], [tree]);
+  const all = useMemo(() => tree.flatMap((c) => [{ slug: c.slug, name: c.name }, ...c.children]), [tree]);
 
   useEffect(() => {
     const applyFromHash = () => {
       const hash = decodeURIComponent(window.location.hash.replace("#", ""));
       if (hash.startsWith("cat-")) {
         const slug = hash.slice(4);
-        if (filters.some((f) => f.slug === slug)) setActive(slug);
+        if (all.some((f) => f.slug === slug)) setActive(slug);
       }
     };
     applyFromHash();
     window.addEventListener("hashchange", applyFromHash);
     return () => window.removeEventListener("hashchange", applyFromHash);
-  }, [filters]);
+  }, [all]);
 
+  const pick = (slug: string) => {
+    setActive(slug);
+    history.replaceState(null, "", slug === TUDO ? "#catalogo" : `#cat-${slug}`);
+  };
+
+  const activeRoot = tree.find((c) => c.slug === active || c.children.some((s) => s.slug === active)) ?? null;
   const q = normalize(query.trim());
   const shown = products.filter(
     (p) =>
-      (active === TUDO || p.categorySlug === active) &&
-      (!q || normalize(`${p.name} ${p.brand} ${p.categoryName ?? ""} ${p.detail}`).includes(q)),
+      (active === TUDO || p.categorySlug === active || p.parentCategorySlug === active) &&
+      (!q || normalize(`${p.name} ${p.brand} ${p.categoryName ?? ""} ${p.parentCategoryName ?? ""} ${p.detail}`).includes(q)),
   );
-  const activeName = filters.find((f) => f.slug === active)?.name ?? "";
+  const activeName = all.find((f) => f.slug === active)?.name ?? "";
 
   return (
     <section id="catalogo" className="scroll-mt-24 bg-offwhite py-16 sm:py-24">
-      {categories.map((c) => (
+      {all.map((c) => (
         <span key={c.slug} id={`cat-${c.slug}`} aria-hidden className="block h-0 scroll-mt-28" />
       ))}
 
@@ -56,25 +63,21 @@ export function Catalog({ products, categories, whatsapp, siteUrl }: CatalogProp
         <div className="mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
           <h2 className="font-display text-4xl text-ink sm:text-5xl">Nosso catálogo</h2>
           <p className="max-w-sm text-espresso/75">
-            Uma seleção com pronta-entrega. Toca em qualquer produto pra ver os detalhes ou pedir direto no
-            WhatsApp.
+            Uma seleção com pronta-entrega. Coloca no carrinho o que quiser e finaliza o pedido pelo WhatsApp.
           </p>
         </div>
 
         <div className="mb-9 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div role="tablist" aria-label="Filtrar por categoria" className="flex flex-wrap gap-2.5">
             {filters.map((f) => {
-              const isActive = active === f.slug;
+              const isActive = f.slug === TUDO ? active === TUDO : activeRoot?.slug === f.slug;
               return (
                 <button
                   key={f.slug}
                   role="tab"
                   aria-selected={isActive}
                   type="button"
-                  onClick={() => {
-                    setActive(f.slug);
-                    history.replaceState(null, "", f.slug === TUDO ? "#catalogo" : `#cat-${f.slug}`);
-                  }}
+                  onClick={() => pick(f.slug)}
                   className={`rounded-full border px-5 py-2 text-sm font-medium transition-all duration-300 ${
                     isActive
                       ? "border-vinho bg-vinho text-champagne-soft shadow-[0_12px_24px_-14px_rgba(85,21,32,0.8)]"
@@ -111,6 +114,32 @@ export function Catalog({ products, categories, whatsapp, siteUrl }: CatalogProp
             />
           </label>
         </div>
+
+        {activeRoot && activeRoot.children.length > 0 && (
+          <div
+            role="tablist"
+            aria-label={`Subcategorias de ${activeRoot.name}`}
+            className="-mt-4 mb-9 flex flex-wrap items-center gap-x-1 gap-y-2 border-l-2 border-champagne pl-3"
+          >
+            {[{ slug: activeRoot.slug, name: `Tudo em ${activeRoot.name}` }, ...activeRoot.children].map((s) => {
+              const on = active === s.slug;
+              return (
+                <button
+                  key={s.slug}
+                  role="tab"
+                  aria-selected={on}
+                  type="button"
+                  onClick={() => pick(s.slug)}
+                  className={`rounded-full px-3.5 py-1.5 text-sm transition-colors duration-200 ${
+                    on ? "bg-champagne-soft font-medium text-vinho" : "text-espresso/80 hover:text-vinho"
+                  }`}
+                >
+                  {s.name}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         {shown.length > 0 ? (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

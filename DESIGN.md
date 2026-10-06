@@ -77,11 +77,16 @@ Seleção (vinho/champanhe), scrollbar (taupe→vinho), foco `:focus-visible`
 
 ## Estrutura da página
 
-`AnnouncementBar` · `Header` (sticky, muda no scroll, menu mobile) · `Hero`
+`AnnouncementBar` · `Header` (sticky, mega menu "Categorias" com subcategorias,
+carrinho, menu mobile com sanfona) · `Hero` (textos e foto vindos do painel)
 (coluna Bodoni + painel vinho com produtos) · `CategoryTiles` (tiles editoriais)
 · `Catalog` (filtro client-side por categoria via hash + empty state de
 Acessórios) · `Story` (band vinho) · `HowToBuy` (stepper numerado) ·
-`InstagramStrip` · `Footer` · `WhatsAppFab`.
+`InstagramStrip` · `Footer` · `WhatsAppFab` · `CartDrawer` (`<dialog>` que entra pela
+direita, total, finaliza no WhatsApp) · `AddedToast` (aviso escuro abaixo do header).
+
+Página do produto: bolinhas de cor 40px com anel ink na escolhida e risco diagonal na
+esgotada; opção sem cor vira etiqueta. A cor escolhida troca a foto da galeria.
 
 ## Acessibilidade
 

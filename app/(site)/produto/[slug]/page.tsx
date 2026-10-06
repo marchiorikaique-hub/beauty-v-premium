@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProductGallery } from "@/components/ProductGallery";
 import { ProductCard } from "@/components/ProductCard";
+import { BuyButtons, MobileBuyBar, ProductSelection, VariantPicker } from "@/components/ProductBuy";
 import { ShareButton } from "@/components/ShareButton";
-import { WhatsApp, Bag, ChatHeart, Card } from "@/components/icons";
+import { Bag, ChatHeart, Card } from "@/components/icons";
 import { getPublicProduct, getSettings, listPublicProducts } from "@/lib/repo";
-import { baseUrl, waProduct } from "@/lib/site";
+import { baseUrl } from "@/lib/site";
 import { discountPercent, formatBRL } from "@/lib/format";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -39,7 +40,15 @@ export default async function ProductPage({ params }: Params) {
   const siteUrl = baseUrl();
   const url = `${siteUrl}/produto/${p.slug}`;
   const off = discountPercent(p.priceCents, p.compareAtCents);
-  const cta = waProduct(settings.whatsapp, { name: p.name, brand: p.brand, url, inStock: p.inStock });
+  const buyProduct = {
+    id: p.id,
+    name: p.name,
+    brand: p.brand,
+    priceCents: p.priceCents,
+    inStock: p.inStock,
+    variantLabel: p.variantLabel,
+    variants: p.variants,
+  };
 
   const others = listPublicProducts().filter((o) => o.id !== p.id);
   const related = [
@@ -79,6 +88,16 @@ export default async function ProductPage({ params }: Params) {
                 Início
               </a>
             </li>
+            {p.parentCategoryName && (
+              <>
+                <li aria-hidden>/</li>
+                <li>
+                  <a href={`/#cat-${p.parentCategorySlug}`} className="hover:text-vinho">
+                    {p.parentCategoryName}
+                  </a>
+                </li>
+              </>
+            )}
             {p.categoryName && (
               <>
                 <li aria-hidden>/</li>
@@ -96,6 +115,7 @@ export default async function ProductPage({ params }: Params) {
           </ol>
         </nav>
 
+        <ProductSelection product={buyProduct}>
         <div className="grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
           <div className="lg:sticky lg:top-28">
             <ProductGallery images={p.images} name={p.name} soldOut={!p.inStock} />
@@ -103,6 +123,7 @@ export default async function ProductPage({ params }: Params) {
 
           <div>
             <p className="text-[0.72rem] font-medium uppercase tracking-[0.22em] text-taupe-deep">
+              {p.parentCategoryName ? `${p.parentCategoryName} · ` : ""}
               {p.categoryName ?? "Beauty V"}
               {p.brand ? ` · ${p.brand}` : ""}
             </p>
@@ -149,18 +170,11 @@ export default async function ProductPage({ params }: Params) {
 
             {p.blurb && <p className="mt-5 max-w-prose text-lg leading-relaxed text-espresso/85">{p.blurb}</p>}
 
-            <div className="mt-8 hidden flex-wrap gap-3 lg:flex">
-              <a
-                href={cta}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`btn px-7 py-4 text-base ${p.inStock ? "btn-primary" : "btn-ghost"}`}
-              >
-                <WhatsApp size={20} />
-                {p.inStock ? "Comprar no WhatsApp" : "Avise-me quando chegar"}
-              </a>
+            <VariantPicker />
+
+            <BuyButtons whatsapp={settings.whatsapp} url={url}>
               <ShareButton url={url} title={p.name} />
-            </div>
+            </BuyButtons>
             <div className="mt-6 lg:hidden">
               <ShareButton url={url} title={p.name} />
             </div>
@@ -191,6 +205,9 @@ export default async function ProductPage({ params }: Params) {
           </div>
         </div>
 
+        <MobileBuyBar whatsapp={settings.whatsapp} url={url} />
+        </ProductSelection>
+
         {related.length > 0 && (
           <section className="mt-20 sm:mt-28" aria-labelledby="relacionados">
             <h2 id="relacionados" className="mb-8 font-display text-3xl text-ink sm:text-4xl">
@@ -205,25 +222,6 @@ export default async function ProductPage({ params }: Params) {
         )}
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-espresso/10 bg-offwhite/95 px-4 py-3 shadow-[0_-12px_30px_-20px_rgba(75,60,53,0.6)] backdrop-blur-md lg:hidden">
-        <div className="flex items-center gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-ink">{p.name}</p>
-            <p className="text-sm text-espresso/75">
-              {p.priceCents != null ? formatBRL(p.priceCents) : "Valor sob consulta"}
-            </p>
-          </div>
-          <a
-            href={cta}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`btn shrink-0 px-5 py-3 text-sm ${p.inStock ? "btn-primary" : "btn-ghost bg-cream"}`}
-          >
-            <WhatsApp size={18} />
-            {p.inStock ? "Comprar" : "Avise-me"}
-          </a>
-        </div>
-      </div>
     </>
   );
 }

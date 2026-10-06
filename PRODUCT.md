@@ -8,10 +8,12 @@
 Loja de beleza e cosméticos com **pronta-entrega**, tocada por uma
 empreendedora em São Paulo. Vende maquiagem, skincare, perfumaria e acessórios
 das marcas queridinhas do momento. O canal de venda e atendimento é o
-**WhatsApp** (não há checkout online nem catálogo com preço público).
+**WhatsApp** (ainda não há pagamento online).
 
-O site é uma **vitrine premium**: apresenta os produtos com beleza, organiza por
-categoria e leva a cliente pro WhatsApp com a mensagem já preenchida.
+O site é uma **vitrine premium com carrinho**: apresenta os produtos com beleza,
+organiza por categoria e subcategoria, deixa a cliente escolher a cor de cada item e
+montar o carrinho, e finaliza mandando o pedido completo (itens, opções, valores e
+total) pro WhatsApp da loja. Pagamento e entrega são combinados na conversa.
 
 ## Público
 
@@ -59,6 +61,17 @@ exclui produtos, gerencia categorias, WhatsApp, Instagram e a barra de avisos, e
 própria senha. A senha inicial foi definida pelo Kaique e enviada por mensagem, por isso o
 painel pede que ela troque por uma só dela. Esqueceu a senha: o Kaique redefine pelo CLI
 (ver README).
+
+## Atualização de 05/10/2026 (pedidos da Vick)
+
+- Subcategorias (um nível) no painel, no menu do site (mega menu igual ao print que
+  ela mandou) e nos filtros do catálogo.
+- Carrinho que finaliza no WhatsApp com a lista completa.
+- Cores e opções por produto (bolinhas de cor, foto por opção, opção esgotada).
+- Página inicial editável no painel (`/admin/inicio`): textos e fotos do topo e da
+  faixa "Sobre", produto do cartãozinho.
+- Pendente: logo nova (ela vai mandar) e pagamento online (depende da conta dela no
+  Mercado Pago ou InfinitePay). Relançamento da marca no sábado 10/10.
 
 ## Constraints
 

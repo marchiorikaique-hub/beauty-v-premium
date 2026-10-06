@@ -1,7 +1,16 @@
 import { db, tx } from "./db";
 import { slugify } from "./format";
 import { seedSettings } from "./seed-data";
-import type { Category, Product, ProductFlag, ProductImage, StoreSettings } from "./types";
+import type {
+  Category,
+  CategoryNode,
+  HomeContent,
+  Product,
+  ProductFlag,
+  ProductImage,
+  ProductVariant,
+  StoreSettings,
+} from "./types";
 
 type Row = Record<string, unknown>;
 const NOW = "strftime('%Y-%m-%dT%H:%M:%fZ','now')";
@@ -16,12 +25,19 @@ const str = (v: unknown) => (v == null ? "" : String(v));
 
 export function getSettings(): StoreSettings {
   const rows = db().prepare("SELECT key, value FROM settings").all() as Row[];
-  const out: StoreSettings = { ...seedSettings, announcements: [...seedSettings.announcements] };
+  const out: StoreSettings = {
+    ...seedSettings,
+    announcements: [...seedSettings.announcements],
+    home: { ...seedSettings.home, storyPoints: [...seedSettings.home.storyPoints] },
+  };
   for (const r of rows) {
     const key = str(r.key) as keyof StoreSettings;
     if (!(key in out)) continue;
     try {
-      (out as unknown as Record<string, unknown>)[key] = JSON.parse(str(r.value));
+      const value = JSON.parse(str(r.value));
+      // campos novos da home ganham o padrão até a dona salvar
+      if (key === "home") out.home = { ...out.home, ...(value as Partial<HomeContent>) };
+      else (out as unknown as Record<string, unknown>)[key] = value;
     } catch {
       /* valor corrompido: fica o padrão */
     }
@@ -29,7 +45,7 @@ export function getSettings(): StoreSettings {
   return out;
 }
 
-export function saveSettings(s: StoreSettings) {
+export function saveSettings(s: Omit<StoreSettings, "home">) {
   tx((conn) => {
     const stmt = conn.prepare(
       "INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value",
@@ -39,6 +55,12 @@ export function saveSettings(s: StoreSettings) {
     stmt.run("city", JSON.stringify(s.city));
     stmt.run("announcements", JSON.stringify(s.announcements));
   });
+}
+
+export function saveHome(home: HomeContent) {
+  db()
+    .prepare("INSERT INTO settings (key, value) VALUES ('home', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value")
+    .run(JSON.stringify(home));
 }
 
 /* ------------------------------------------------------------------ */
@@ -54,19 +76,35 @@ function mapCategory(r: Row): Category {
     image: str(r.image),
     position: Number(r.position),
     visible: bool(r.visible),
+    parentId: num(r.parent_id),
     productCount: Number(r.product_count ?? 0),
   };
 }
 
+const CATEGORY_ORDER = `ORDER BY COALESCE(p0.position, c.position) ASC, COALESCE(p0.id, c.id) ASC,
+  c.parent_id IS NOT NULL, c.position ASC, c.id ASC`;
+
+/** Principais na ordem, cada uma seguida das subcategorias dela. */
 export function listCategories(opts: { onlyVisible?: boolean } = {}): Category[] {
   const rows = db()
     .prepare(
       `SELECT c.*, (SELECT COUNT(*) FROM products p WHERE p.category_id = c.id AND p.deleted_at IS NULL) AS product_count
-       FROM categories c ${opts.onlyVisible ? "WHERE c.visible = 1" : ""}
-       ORDER BY c.position ASC, c.id ASC`,
+       FROM categories c LEFT JOIN categories p0 ON p0.id = c.parent_id
+       ${opts.onlyVisible ? "WHERE c.visible = 1 AND (p0.id IS NULL OR p0.visible = 1)" : ""}
+       ${CATEGORY_ORDER}`,
     )
     .all() as Row[];
   return rows.map(mapCategory);
+}
+
+/** Árvore pra loja (menu, filtros). Só o que está visível. */
+export function categoryTree(categories: Category[]): CategoryNode[] {
+  const roots = categories.filter((c) => c.parentId == null);
+  return roots.map((r) => ({
+    slug: r.slug,
+    name: r.name,
+    children: categories.filter((c) => c.parentId === r.id).map((c) => ({ slug: c.slug, name: c.name })),
+  }));
 }
 
 export function getCategory(id: number): Category | null {
@@ -95,28 +133,66 @@ export interface CategoryInput {
   blurb: string;
   image: string;
   visible: boolean;
+  parentId: number | null;
+}
+
+export function countChildren(id: number): number {
+  const r = db().prepare("SELECT COUNT(*) AS n FROM categories WHERE parent_id = ?").get(id) as Row;
+  return Number(r.n);
 }
 
 export function createCategory(input: CategoryInput): number {
   return tx((conn) => {
-    const max = conn.prepare("SELECT COALESCE(MAX(position), 0) AS m FROM categories").get() as Row;
+    const max = conn
+      .prepare("SELECT COALESCE(MAX(position), 0) AS m FROM categories WHERE parent_id IS ?")
+      .get(input.parentId) as Row;
     const res = conn
-      .prepare("INSERT INTO categories (slug, name, blurb, image, position, visible) VALUES (?, ?, ?, ?, ?, ?)")
-      .run(uniqueSlug("categories", input.name), input.name, input.blurb, input.image, Number(max.m) + 1, input.visible ? 1 : 0);
+      .prepare(
+        "INSERT INTO categories (slug, name, blurb, image, position, visible, parent_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      )
+      .run(
+        uniqueSlug("categories", input.name),
+        input.name,
+        input.blurb,
+        input.image,
+        Number(max.m) + 1,
+        input.visible ? 1 : 0,
+        input.parentId,
+      );
     return Number(res.lastInsertRowid);
   });
 }
 
 export function updateCategory(id: number, input: CategoryInput) {
-  db()
-    .prepare(`UPDATE categories SET name = ?, blurb = ?, image = ?, visible = ?, updated_at = ${NOW} WHERE id = ?`)
-    .run(input.name, input.blurb, input.image, input.visible ? 1 : 0, id);
+  tx((conn) => {
+    const cur = conn.prepare("SELECT parent_id FROM categories WHERE id = ?").get(id) as Row | undefined;
+    const moved = cur != null && num(cur.parent_id) !== input.parentId;
+    // mudou de lugar: entra no fim da lista nova
+    const pos = moved
+      ? Number(
+          (conn.prepare("SELECT COALESCE(MAX(position), 0) AS m FROM categories WHERE parent_id IS ?").get(input.parentId) as Row).m,
+        ) + 1
+      : null;
+    conn
+      .prepare(
+        `UPDATE categories SET name = ?, blurb = ?, image = ?, visible = ?, parent_id = ?,
+          position = COALESCE(?, position), updated_at = ${NOW} WHERE id = ?`,
+      )
+      .run(input.name, input.blurb, input.image, input.visible ? 1 : 0, input.parentId, pos, id);
+  });
 }
 
-/** Só apaga categoria sem produtos ativos. Produtos da lixeira ficam sem categoria. */
+/** Só apaga categoria sem produtos ativos e sem subcategorias. Produtos da lixeira ficam sem categoria. */
 export function deleteCategory(id: number): { ok: true } | { ok: false; reason: string } {
   const cat = getCategory(id);
   if (!cat) return { ok: false, reason: "Categoria não encontrada." };
+  const children = countChildren(id);
+  if (children > 0) {
+    return {
+      ok: false,
+      reason: `Essa categoria tem ${children} subcategoria(s). Exclua ou mova as subcategorias antes.`,
+    };
+  }
   if (cat.productCount > 0) {
     return {
       ok: false,
@@ -127,9 +203,14 @@ export function deleteCategory(id: number): { ok: true } | { ok: false; reason: 
   return { ok: true };
 }
 
+/** Troca de lugar com a vizinha do mesmo nível (principais entre si, subs dentro da mesma principal). */
 export function moveCategory(id: number, dir: -1 | 1) {
   tx((conn) => {
-    const rows = conn.prepare("SELECT id FROM categories ORDER BY position ASC, id ASC").all() as Row[];
+    const me = conn.prepare("SELECT parent_id FROM categories WHERE id = ?").get(id) as Row | undefined;
+    if (!me) return;
+    const rows = conn
+      .prepare("SELECT id FROM categories WHERE parent_id IS ? ORDER BY position ASC, id ASC")
+      .all(num(me.parent_id)) as Row[];
     const ids = rows.map((r) => Number(r.id));
     const i = ids.indexOf(id);
     const j = i + dir;
@@ -145,10 +226,14 @@ export function moveCategory(id: number, dir: -1 | 1) {
 /* ------------------------------------------------------------------ */
 
 const PRODUCT_SELECT = `
-  SELECT p.*, c.slug AS category_slug, c.name AS category_name
-  FROM products p LEFT JOIN categories c ON c.id = p.category_id`;
+  SELECT p.*, c.slug AS category_slug, c.name AS category_name,
+    pc.slug AS parent_category_slug, pc.name AS parent_category_name
+  FROM products p
+  LEFT JOIN categories c ON c.id = p.category_id
+  LEFT JOIN categories pc ON pc.id = c.parent_id`;
 
-const PUBLIC_WHERE = `p.visible = 1 AND p.deleted_at IS NULL AND (p.category_id IS NULL OR c.visible = 1)`;
+const PUBLIC_WHERE = `p.visible = 1 AND p.deleted_at IS NULL AND (p.category_id IS NULL OR c.visible = 1)
+  AND (pc.id IS NULL OR pc.visible = 1)`;
 const ORDER = `ORDER BY p.featured DESC, p.position ASC, p.id DESC`;
 
 function attachImages(rows: Row[]): Product[] {
@@ -167,6 +252,19 @@ function attachImages(rows: Row[]): Product[] {
     list.push({ url: str(r.url), cutout: bool(r.cutout), width: num(r.width), height: num(r.height) });
     byProduct.set(pid, list);
   }
+  const varRows = db()
+    .prepare(
+      `SELECT product_id, name, color, image, in_stock FROM product_variants
+       WHERE product_id IN (${ids.map(() => "?").join(",")}) ORDER BY position ASC, id ASC`,
+    )
+    .all(...ids) as Row[];
+  const variants = new Map<number, ProductVariant[]>();
+  for (const r of varRows) {
+    const pid = Number(r.product_id);
+    const list = variants.get(pid) ?? [];
+    list.push({ name: str(r.name), color: str(r.color), image: str(r.image), inStock: bool(r.in_stock) });
+    variants.set(pid, list);
+  }
   return rows.map((r) => ({
     id: Number(r.id),
     slug: str(r.slug),
@@ -175,6 +273,8 @@ function attachImages(rows: Row[]): Product[] {
     categoryId: num(r.category_id),
     categorySlug: r.category_slug == null ? null : str(r.category_slug),
     categoryName: r.category_name == null ? null : str(r.category_name),
+    parentCategorySlug: r.parent_category_slug == null ? null : str(r.parent_category_slug),
+    parentCategoryName: r.parent_category_name == null ? null : str(r.parent_category_name),
     blurb: str(r.blurb),
     description: str(r.description),
     detail: str(r.detail),
@@ -187,6 +287,8 @@ function attachImages(rows: Row[]): Product[] {
     position: Number(r.position),
     deletedAt: r.deleted_at == null ? null : str(r.deleted_at),
     images: byProduct.get(Number(r.id)) ?? [],
+    variantLabel: str(r.variant_label),
+    variants: variants.get(Number(r.id)) ?? [],
     createdAt: str(r.created_at),
     updatedAt: str(r.updated_at),
   }));
@@ -230,6 +332,17 @@ export interface ProductInput {
   featured: boolean;
   isNew: boolean;
   images: ProductImage[];
+  variantLabel: string;
+  variants: ProductVariant[];
+}
+
+function writeVariants(productId: number, variants: ProductVariant[]) {
+  const conn = db();
+  conn.prepare("DELETE FROM product_variants WHERE product_id = ?").run(productId);
+  const ins = conn.prepare(
+    "INSERT INTO product_variants (product_id, name, color, image, in_stock, position) VALUES (?, ?, ?, ?, ?, ?)",
+  );
+  variants.forEach((v, i) => ins.run(productId, v.name, v.color, v.image, v.inStock ? 1 : 0, i));
 }
 
 function writeImages(productId: number, images: ProductImage[]) {
@@ -248,8 +361,8 @@ export function createProduct(input: ProductInput): number {
     const res = conn
       .prepare(
         `INSERT INTO products (slug, name, brand, category_id, blurb, description, detail, price_cents,
-          compare_at_cents, visible, in_stock, featured, is_new, position)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          compare_at_cents, visible, in_stock, featured, is_new, position, variant_label)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       )
       .run(
         uniqueSlug("products", input.name),
@@ -266,9 +379,11 @@ export function createProduct(input: ProductInput): number {
         input.featured ? 1 : 0,
         input.isNew ? 1 : 0,
         Number(min.m) - 10,
+        input.variants.length ? input.variantLabel : "",
       );
     const id = Number(res.lastInsertRowid);
     writeImages(id, input.images);
+    writeVariants(id, input.variants);
     return id;
   });
 }
@@ -280,7 +395,7 @@ export function updateProduct(id: number, input: ProductInput) {
       .prepare(
         `UPDATE products SET name = ?, brand = ?, category_id = ?, blurb = ?, description = ?, detail = ?,
           price_cents = ?, compare_at_cents = ?, visible = ?, in_stock = ?, featured = ?, is_new = ?,
-          updated_at = ${NOW}
+          variant_label = ?, updated_at = ${NOW}
          WHERE id = ?`,
       )
       .run(
@@ -296,9 +411,11 @@ export function updateProduct(id: number, input: ProductInput) {
         input.inStock ? 1 : 0,
         input.featured ? 1 : 0,
         input.isNew ? 1 : 0,
+        input.variants.length ? input.variantLabel : "",
         id,
       );
     writeImages(id, input.images);
+    writeVariants(id, input.variants);
   });
 }
 
@@ -348,6 +465,8 @@ export function duplicateProduct(id: number): number | null {
     featured: false,
     isNew: src.isNew,
     images: src.images,
+    variantLabel: src.variantLabel,
+    variants: src.variants,
   });
 }
 
@@ -372,10 +491,25 @@ export function purgeTrash(days = 30): number {
   return Number(res.changes);
 }
 
-/** Todas as URLs de imagem em uso (produtos, inclusive lixeira, e categorias). */
+/** Todas as URLs de imagem em uso (produtos, inclusive lixeira, categorias e home). */
 export function referencedMedia(): Set<string> {
   const rows = db()
     .prepare("SELECT url AS u FROM product_images UNION SELECT image AS u FROM categories")
     .all() as Row[];
-  return new Set(rows.map((r) => str(r.u)));
+  const out = new Set(rows.map((r) => str(r.u)));
+  const home = getSettings().home;
+  if (home.heroImage) out.add(home.heroImage.url);
+  if (home.storyImage) out.add(home.storyImage);
+  return out;
+}
+
+/** Pro painel: "Maquiagem › Boca" na ordem do menu. */
+export function categoryChoices(): { id: number; name: string; parentId: number | null }[] {
+  const all = listCategories();
+  const byId = new Map(all.map((c) => [c.id, c.name]));
+  return all.map((c) => ({
+    id: c.id,
+    name: c.parentId ? `${byId.get(c.parentId) ?? ""} › ${c.name}` : c.name,
+    parentId: c.parentId,
+  }));
 }

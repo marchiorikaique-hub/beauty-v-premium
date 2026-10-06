@@ -5,13 +5,13 @@ import { waGeneral } from "@/lib/site";
 const steps = [
   {
     icon: Bag,
-    title: "Escolha o produto",
-    text: "Navegue pelo catálogo e separe os queridinhos que você quer.",
+    title: "Monte seu carrinho",
+    text: "Escolha os queridinhos, a cor de cada um e a quantidade.",
   },
   {
     icon: WhatsApp,
-    title: "Chame no WhatsApp",
-    text: "Toque em comprar e a mensagem já vai com o produto certinho.",
+    title: "Finalize no WhatsApp",
+    text: "O pedido vai prontinho pra gente, com produtos e valores.",
   },
   {
     icon: ChatHeart,
@@ -28,7 +28,8 @@ const steps = [
 export function HowToBuy({ whatsapp }: { whatsapp: string }) {
   return (
     <section
-      className="bg-champagne-soft/60 py-16 sm:py-24"
+      id="como-comprar"
+      className="scroll-mt-24 bg-champagne-soft/60 py-16 sm:py-24"
       aria-labelledby="how-title"
     >
       <div className="shell">
@@ -40,8 +41,8 @@ export function HowToBuy({ whatsapp }: { whatsapp: string }) {
             Comprar é rapidinho
           </h2>
           <p className="mt-4 text-espresso/75">
-            Do toque no produto ao seu pedido a caminho, tudo acontece numa
-            conversa de WhatsApp.
+            Você monta o carrinho aqui no site e finaliza numa conversa de
+            WhatsApp, com atendimento de gente pra gente.
           </p>
         </div>
 

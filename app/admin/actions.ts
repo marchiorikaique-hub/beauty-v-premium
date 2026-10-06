@@ -16,6 +16,7 @@ import { burnTime, hashPassword, verifyPassword } from "@/lib/password.mjs";
 import { blockedFor, hit, reset } from "@/lib/rate-limit";
 import {
   createCategory,
+  countChildren,
   createProduct,
   deleteCategory,
   destroyProduct,
@@ -24,14 +25,23 @@ import {
   getProduct,
   moveCategory,
   moveProduct,
+  getPublicProduct,
   restoreProduct,
+  saveHome,
   saveSettings,
   setProductFlag,
   trashProduct,
   updateCategory,
   updateProduct,
 } from "@/lib/repo";
-import { categorySchema, fieldErrors, passwordSchema, productSchema, settingsSchema } from "@/lib/validation";
+import {
+  categorySchema,
+  fieldErrors,
+  homeSchema,
+  passwordSchema,
+  productSchema,
+  settingsSchema,
+} from "@/lib/validation";
 import type { ProductFlag } from "@/lib/types";
 
 export type ActionResult =
@@ -169,6 +179,21 @@ export async function saveCategoryAction(id: number | null, input: unknown): Pro
   await requireUser();
   const parsed = categorySchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: INVALID, fields: fieldErrors(parsed.error) };
+  const { parentId } = parsed.data;
+  if (parentId != null) {
+    // um nível só: a "mãe" precisa ser categoria principal
+    const parent = getCategory(parentId);
+    if (!parent || parent.parentId != null || parentId === id) {
+      return { ok: false, error: INVALID, fields: { parentId: "Escolha uma categoria principal." } };
+    }
+    if (id != null && countChildren(id) > 0) {
+      return {
+        ok: false,
+        error: INVALID,
+        fields: { parentId: "Essa categoria já tem subcategorias, então ela precisa continuar como principal." },
+      };
+    }
+  }
   if (id == null) {
     const newId = createCategory(parsed.data);
     refresh();
@@ -204,6 +229,23 @@ export async function saveSettingsAction(input: unknown): Promise<ActionResult> 
   saveSettings(parsed.data);
   refresh();
   return { ok: true, message: "Configurações salvas." };
+}
+
+export async function saveHomeAction(input: unknown): Promise<ActionResult> {
+  await requireUser();
+  const parsed = homeSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: INVALID, fields: fieldErrors(parsed.error) };
+  const home = parsed.data;
+  if (home.heroProductSlug && !getPublicProduct(home.heroProductSlug)) {
+    return {
+      ok: false,
+      error: INVALID,
+      fields: { heroProductSlug: "Esse produto não está aparecendo na loja. Escolha outro." },
+    };
+  }
+  saveHome(home);
+  refresh();
+  return { ok: true, message: "Página inicial salva." };
 }
 
 /* ------------------------------ Conta ------------------------------ */

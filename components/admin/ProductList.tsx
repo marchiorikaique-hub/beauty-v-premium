@@ -30,7 +30,7 @@ function normalize(s: string) {
 
 interface ProductListProps {
   products: Product[];
-  categories: { id: number; name: string }[];
+  categories: { id: number; name: string; parentId: number | null }[];
   trashCount: number;
 }
 
@@ -44,6 +44,9 @@ export function ProductList({ products, categories, trashCount }: ProductListPro
   const [toTrash, setToTrash] = useState<Product | null>(null);
   const [pending, start] = useTransition();
 
+  // principal inclui os produtos das subcategorias dela
+  const inCategory = (id: number | null, selected: string) =>
+    String(id) === selected || String(categories.find((c) => c.id === id)?.parentId) === selected;
   const flag = (p: Product, f: ProductFlag): boolean => overrides[`${p.id}:${f}`] ?? p[f];
 
   const q = normalize(query.trim());
@@ -52,7 +55,7 @@ export function ProductList({ products, categories, trashCount }: ProductListPro
     () =>
       products.filter((p) => {
         if (q && !normalize(`${p.name} ${p.brand} ${p.detail}`).includes(q)) return false;
-        if (category === "none" ? p.categoryId != null : category && String(p.categoryId) !== category) return false;
+        if (category === "none" ? p.categoryId != null : category && !inCategory(p.categoryId, category)) return false;
         if (status === "loja" && !flag(p, "visible")) return false;
         if (status === "ocultos" && flag(p, "visible")) return false;
         if (status === "esgotados" && flag(p, "inStock")) return false;
