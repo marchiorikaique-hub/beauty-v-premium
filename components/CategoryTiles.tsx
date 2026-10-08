@@ -1,9 +1,20 @@
 import { SectionTitle } from "./SectionTitle";
 import { Sparkle } from "./icons";
-import type { Category } from "@/lib/types";
+import type { Category, ProductImage } from "@/lib/types";
 
-/** Categorias principais em círculo, como no mockup da dona. */
-export function CategoryTiles({ categories, title }: { categories: Category[]; title: string }) {
+/**
+ * Categorias principais em círculo, como no mockup da dona. Sem foto escolhida no painel,
+ * mostra um produto da própria categoria (site de venda: sempre produto, nunca vazio).
+ */
+export function CategoryTiles({
+  categories,
+  title,
+  covers = {},
+}: {
+  categories: Category[];
+  title: string;
+  covers?: Record<string, ProductImage>;
+}) {
   if (categories.length === 0) return null;
   return (
     <section className="shell pt-9 sm:pt-20" aria-labelledby="cat-title">
@@ -19,6 +30,15 @@ export function CategoryTiles({ categories, title }: { categories: Category[]; t
                       src={cat.image}
                       alt=""
                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
+                    />
+                  ) : covers[cat.slug] ? (
+                    <img
+                      src={covers[cat.slug]!.url}
+                      alt=""
+                      className={`absolute inset-0 h-full w-full transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08] ${
+                        covers[cat.slug]!.cutout ? "object-contain p-2.5 sm:p-4" : "object-cover"
+                      }`}
+                      style={covers[cat.slug]!.cutout ? { background: "radial-gradient(circle, var(--color-cream), var(--color-champagne-soft))" } : undefined}
                     />
                   ) : (
                     <span className="satin grid h-full w-full place-items-center">
